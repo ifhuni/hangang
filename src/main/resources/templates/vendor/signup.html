@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>업체 회원가입 - 한강웹</title>
+    <style>
+        body { font-family: sans-serif; max-width: 480px; margin: 60px auto; }
+        .field { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; }
+        .error { color: #c0392b; font-size: 13px; margin-top: 4px; }
+        button { padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>업체 회원가입</h1>
+
+    <p th:if="${errorMessage}" class="error" th:text="${errorMessage}"></p>
+
+    <form th:action="@{/vendor/signup}" th:object="${vendorSignupForm}" method="post">
+        <div class="field">
+            <label>상호명</label>
+            <input type="text" th:field="*{businessName}">
+            <div class="error" th:if="${#fields.hasErrors('businessName')}" th:errors="*{businessName}"></div>
+        </div>
+        <div class="field">
+            <label>사업자등록번호</label>
+            <input type="text" th:field="*{businessRegNo}">
+            <div class="error" th:if="${#fields.hasErrors('businessRegNo')}" th:errors="*{businessRegNo}"></div>
+        </div>
+        <div class="field">
+            <label>대표자명</label>
+            <input type="text" th:field="*{ceoName}">
+            <div class="error" th:if="${#fields.hasErrors('ceoName')}" th:errors="*{ceoName}"></div>
+        </div>
+        <div class="field">
+            <label>연락처</label>
+            <input type="text" th:field="*{phone}">
+            <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+        </div>
+        <div class="field">
+            <label>이메일</label>
+            <input type="email" th:field="*{email}">
+            <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+        <div class="field">
+            <label>비밀번호</label>
+            <input type="password" th:field="*{password}">
+            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+        <button type="submit">가입 신청</button>
+    </form>
+</body>
+</html>
