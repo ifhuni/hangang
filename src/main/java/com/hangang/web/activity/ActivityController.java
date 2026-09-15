@@ -1,6 +1,7 @@
 package com.hangang.web.activity;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,14 +58,36 @@ public class ActivityController {
         Activity activity = activityService.getActivity(activityId);
         Map<LocalDate, Integer> appliedCounts = applicationService.getAppliedCounts(activityId);
 
-        List<ActivityDateRow> dateRows = new ArrayList<>();
+        Map<LocalDate, ActivityDateRow> rowsByDate = new HashMap<>();
         for (LocalDate date : datesBetween(activity.getActivityStartDate(), activity.getActivityEndDate())) {
-            dateRows.add(new ActivityDateRow(date, activity.getDailyCapacity(), appliedCounts.getOrDefault(date, 0)));
+            rowsByDate.put(date, new ActivityDateRow(date, activity.getDailyCapacity(), appliedCounts.getOrDefault(date, 0)));
         }
 
         model.addAttribute("activity", activity);
-        model.addAttribute("dateRows", dateRows);
+        model.addAttribute("calendarMonths", buildCalendarMonths(activity.getActivityStartDate(), activity.getActivityEndDate(), rowsByDate));
         return "activity/detail";
+    }
+
+    private List<CalendarMonth> buildCalendarMonths(LocalDate activityStart, LocalDate activityEnd,
+                                                      Map<LocalDate, ActivityDateRow> rowsByDate) {
+        List<CalendarMonth> months = new ArrayList<>();
+        YearMonth startMonth = YearMonth.from(activityStart);
+        YearMonth endMonth = YearMonth.from(activityEnd);
+
+        for (YearMonth ym = startMonth; !ym.isAfter(endMonth); ym = ym.plusMonths(1)) {
+            List<CalendarDay> days = new ArrayList<>();
+            LocalDate firstOfMonth = ym.atDay(1);
+            int leadingBlanks = firstOfMonth.getDayOfWeek().getValue() % 7;
+            for (int i = 0; i < leadingBlanks; i++) {
+                days.add(CalendarDay.blank());
+            }
+            for (int d = 1; d <= ym.lengthOfMonth(); d++) {
+                LocalDate date = ym.atDay(d);
+                days.add(CalendarDay.of(date, rowsByDate.get(date)));
+            }
+            months.add(new CalendarMonth(ym, days));
+        }
+        return months;
     }
 
     private List<LocalDate> datesBetween(LocalDate start, LocalDate end) {

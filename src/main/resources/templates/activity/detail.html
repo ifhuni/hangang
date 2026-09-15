@@ -4,51 +4,183 @@
     <meta charset="UTF-8">
     <title th:text="${activity.title} + ' - 한강웹'"></title>
     <style>
-        body { font-family: sans-serif; max-width: 720px; margin: 40px auto; }
-        .vendor { color: #888; margin-bottom: 8px; }
-        .meta { margin: 24px 0; }
-        .meta div { margin-bottom: 6px; }
-        .price { font-size: 20px; font-weight: bold; margin: 16px 0; }
-        table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
-        th { background: #f5f5f5; }
-        .apply-row { padding: 6px 14px; background: #2980b9; color: white; border: none; font-size: 13px; cursor: pointer; }
+        :root {
+            --ground: #f6f7f9;
+            --surface: #ffffff;
+            --border: #e3e6ea;
+            --text: #1f2a37;
+            --text-muted: #6b7684;
+            --accent: #2980b9;
+            --accent-soft: #eaf2fc;
+            --warn: #c0651a;
+            --warn-soft: #fdeee0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--ground);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, Roboto, sans-serif;
+            padding: 0 16px 80px;
+        }
+        a { color: inherit; text-decoration: none; }
+        .wrap { max-width: 820px; margin: 0 auto; }
+
+        .topbar { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
+        .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+        .brand span { color: var(--accent); }
+        .topnav { display: flex; gap: 20px; font-size: 14px; color: var(--text-muted); }
+        .topnav a:hover { color: var(--text); }
+
+        .back-link { display: inline-block; margin-bottom: 14px; font-size: 13.5px; color: var(--text-muted); }
+        .back-link:hover { color: var(--accent); }
+
+        .header-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px clamp(18px, 4vw, 32px);
+        }
+        .vendor-line { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .vendor { font-size: 13px; font-weight: 700; color: var(--accent); }
+        h1 { margin: 0 0 14px; font-size: clamp(22px, 3vw, 27px); line-height: 1.3; text-wrap: balance; }
+
+        .info-chips { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 18px; }
+        .info-chip { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-muted); }
+
+        .price-row {
+            display: flex; align-items: baseline; justify-content: space-between;
+            padding-top: 16px; border-top: 1px dashed var(--border);
+        }
+        .price { font-size: 24px; font-weight: 800; }
+        .price small { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+        .reg-period { font-size: 12.5px; color: var(--text-muted); text-align: right; }
+
+        .section { margin-top: 22px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px clamp(18px, 4vw, 28px); }
+        .section h2 { margin: 0 0 12px; font-size: 16px; }
+        .description { margin: 0; font-size: 14.5px; line-height: 1.7; color: var(--text); white-space: pre-wrap; }
+
+        /* ---------- calendar date picker ---------- */
+        .date-hint { margin: 0 0 18px; font-size: 13px; color: var(--text-muted); }
+        .legend { display: flex; gap: 16px; margin-bottom: 20px; font-size: 12px; color: var(--text-muted); }
+        .legend span { display: inline-flex; align-items: center; gap: 5px; }
+        .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+        .legend .i-active { background: var(--accent-soft); border: 1px solid var(--accent); }
+        .legend .i-full { background: var(--warn-soft); border: 1px solid var(--warn); }
+        .legend .i-disabled { background: var(--ground); border: 1px solid var(--border); }
+
+        .calendar-month { margin-bottom: 26px; }
+        .calendar-month:last-child { margin-bottom: 0; }
+        .calendar-month h3 { margin: 0 0 10px; font-size: 14.5px; font-weight: 800; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .calendar-dow { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 4px; }
+        .calendar-cell {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            border: 1px solid transparent;
+        }
+        .calendar-cell.blank { visibility: hidden; }
+        .calendar-cell.disabled { background: var(--ground); color: #c3c9d1; }
+        .calendar-cell.active { background: var(--accent-soft); color: var(--accent); cursor: pointer; }
+        .calendar-cell.active:hover { border-color: var(--accent); }
+        .calendar-cell.full { background: var(--warn-soft); color: var(--warn); }
+        .calendar-cell.full:hover { border-color: var(--warn); }
+        .calendar-cell .cell-day { font-size: 13.5px; font-weight: 800; }
+        .calendar-cell .cell-note { font-size: 9px; font-weight: 700; }
+
+        footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
     </style>
     <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
-    <p><a th:href="@{/activities}">← 목록으로</a></p>
+<div class="wrap">
 
-    <div class="vendor" th:text="${activity.vendorBusinessName}"></div>
-    <h1 th:text="${activity.title}"></h1>
-    <p th:text="${activity.description}"></p>
-
-    <div class="price" th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + '원'"></div>
-
-    <div class="meta">
-        <div th:if="${activity.location != null and !activity.location.isEmpty()}">장소: <span th:text="${activity.location}"></span></div>
-        <div>등록 기간: <span th:text="${activity.registrationStartDate} + ' ~ ' + ${activity.registrationEndDate}"></span></div>
-        <div>활동 기간: <span th:text="${activity.activityStartDate} + ' ~ ' + ${activity.activityEndDate}"></span></div>
-        <div>하루당 정원: <span th:text="${activity.dailyCapacity} + '명'"></span></div>
+    <div class="topbar">
+        <div class="brand">한강<span>웹</span></div>
+        <nav class="topnav">
+            <a th:href="@{/}">홈</a>
+            <a th:href="@{/activities}">활동 목록</a>
+        </nav>
     </div>
 
-    <table>
-        <thead>
-            <tr><th>날짜</th><th>정원</th><th>현재 신청 인원</th><th>신청</th></tr>
-        </thead>
-        <tbody>
-            <tr th:each="row : ${dateRows}">
-                <td th:text="${row.date}"></td>
-                <td th:text="${row.capacity} + '명'"></td>
-                <td th:text="${row.appliedCount} + '명'"></td>
-                <td>
-                    <a th:href="@{/activities/{id}/apply(id=${activity.activityId}, date=${row.date})}">
-                        <button class="apply-row" type="button">신청</button>
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <th:block th:replace="~{fragments/layout :: js}"></th:block>
+    <a class="back-link" th:href="@{/activities}">← 목록으로</a>
+
+    <div class="header-card">
+        <div class="vendor-line">
+            <span class="vendor" th:text="${activity.vendorBusinessName}"></span>
+        </div>
+        <h1 th:text="${activity.title}"></h1>
+
+        <div class="info-chips">
+            <span class="info-chip" th:if="${activity.location != null and !activity.location.isEmpty()}"
+                  th:text="'📍 ' + ${activity.location}"></span>
+            <span class="info-chip" th:text="'📅 활동 기간 ' + ${activity.activityStartDate} + ' ~ ' + ${activity.activityEndDate}"></span>
+            <span class="info-chip" th:text="'👥 하루 정원 ' + ${activity.dailyCapacity} + '명'"></span>
+        </div>
+
+        <div class="price-row">
+            <div class="price">
+                <span th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + '원'"></span>
+                <small>&nbsp;/ 1인</small>
+            </div>
+            <div class="reg-period">
+                신청 접수: <span th:text="${activity.registrationStartDate} + ' ~ ' + ${activity.registrationEndDate}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section card">
+        <h2>활동 소개</h2>
+        <p class="description" th:text="${activity.description}"></p>
+    </div>
+
+    <div class="section card">
+        <h2>참여 날짜 선택</h2>
+        <p class="date-hint">활동 기간 중 참여를 원하는 날짜를 선택하면 신청 폼으로 이동합니다. 정원이 찬 날짜도 대기 신청이 가능합니다.</p>
+        <div class="legend">
+            <span><i class="i-active"></i>신청 가능</span>
+            <span><i class="i-full"></i>마감(대기 가능)</span>
+            <span><i class="i-disabled"></i>신청 불가</span>
+        </div>
+
+        <div class="calendar-month" th:each="month : ${calendarMonths}">
+            <h3 th:text="${month.year} + '년 ' + ${month.month} + '월'"></h3>
+            <div class="calendar-grid">
+                <div class="calendar-dow">일</div>
+                <div class="calendar-dow">월</div>
+                <div class="calendar-dow">화</div>
+                <div class="calendar-dow">수</div>
+                <div class="calendar-dow">목</div>
+                <div class="calendar-dow">금</div>
+                <div class="calendar-dow">토</div>
+
+                <div th:each="day : ${month.days}"
+                     th:class="${day.blank} ? 'calendar-cell blank' : (${day.selectable} ? (${day.row.full} ? 'calendar-cell full' : 'calendar-cell active') : 'calendar-cell disabled')">
+
+                    <th:block th:if="${!day.blank and day.selectable}">
+                        <a th:href="@{/activities/{id}/apply(id=${activity.activityId}, date=${day.date})}"
+                           style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; gap:2px;">
+                            <span class="cell-day" th:text="${day.dayOfMonth}"></span>
+                            <span class="cell-note" th:text="${day.row.full} ? '마감' : ${day.row.remaining} + '석'"></span>
+                        </a>
+                    </th:block>
+                    <th:block th:if="${!day.blank and !day.selectable}">
+                        <span class="cell-day" th:text="${day.dayOfMonth}"></span>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>한강웹</footer>
+
+</div>
+<th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>
