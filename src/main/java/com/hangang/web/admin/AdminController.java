@@ -28,6 +28,12 @@ public class AdminController {
         return "admin/vendors";
     }
 
+    @GetMapping("/vendors/all")
+    public String allVendors(Model model) {
+        model.addAttribute("vendors", adminService.listAllVendors());
+        return "admin/all-vendors";
+    }
+
     @PostMapping("/vendors/{vendorId}/approve")
     public String approve(@PathVariable Long vendorId) {
         adminService.approveVendor(vendorId);

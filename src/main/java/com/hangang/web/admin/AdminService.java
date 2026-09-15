@@ -20,6 +20,10 @@ public class AdminService {
         return vendorMapper.findByStatus("PENDING");
     }
 
+    public List<Vendor> listAllVendors() {
+        return vendorMapper.findAll();
+    }
+
     public void approveVendor(Long vendorId) {
         vendorMapper.approve(vendorId);
     }

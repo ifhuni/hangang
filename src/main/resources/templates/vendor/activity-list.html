@@ -28,6 +28,7 @@
                 <th>금액</th>
                 <th>상태</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -38,6 +39,7 @@
                 <td th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + '원'"></td>
                 <td th:text="${activity.status}"></td>
                 <td><a th:href="@{/vendor/activities/{id}/edit(id=${activity.activityId})}">수정</a></td>
+                <td><a th:href="@{/vendor/activities/{id}/participants(id=${activity.activityId})}">참여자 관리</a></td>
             </tr>
         </tbody>
     </table>

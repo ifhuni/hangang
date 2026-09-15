@@ -8,10 +8,22 @@
         WHERE email = #{email}
     </select>
 
+    <select id="existsByEmailExcludingVendor" resultType="int">
+        SELECT COUNT(*)
+        FROM vendor
+        WHERE email = #{email} AND vendor_id != #{vendorId}
+    </select>
+
     <select id="findByEmail" parameterType="string" resultType="com.hangang.web.vendor.Vendor">
         SELECT vendor_id, business_name, business_reg_no, ceo_name, phone, email, password, status, created_at, approved_at
         FROM vendor
         WHERE email = #{email}
+    </select>
+
+    <select id="findById" parameterType="long" resultType="com.hangang.web.vendor.Vendor">
+        SELECT vendor_id, business_name, business_reg_no, ceo_name, phone, email, password, status, created_at, approved_at
+        FROM vendor
+        WHERE vendor_id = #{vendorId}
     </select>
 
     <insert id="insertVendor" parameterType="com.hangang.web.vendor.Vendor"
@@ -27,6 +39,12 @@
         ORDER BY created_at
     </select>
 
+    <select id="findAll" resultType="com.hangang.web.vendor.Vendor">
+        SELECT vendor_id, business_name, business_reg_no, ceo_name, phone, email, password, status, created_at, approved_at
+        FROM vendor
+        ORDER BY created_at DESC
+    </select>
+
     <update id="approve" parameterType="long">
         UPDATE vendor
         SET status = 'APPROVED', approved_at = CURRENT_TIMESTAMP
@@ -37,6 +55,22 @@
         UPDATE vendor
         SET status = 'REJECTED'
         WHERE vendor_id = #{vendorId} AND status = 'PENDING'
+    </update>
+
+    <update id="updateProfile" parameterType="com.hangang.web.vendor.Vendor">
+        UPDATE vendor
+        SET business_name = #{businessName},
+            business_reg_no = #{businessRegNo},
+            ceo_name = #{ceoName},
+            phone = #{phone},
+            email = #{email}
+        WHERE vendor_id = #{vendorId}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE vendor
+        SET password = #{password}
+        WHERE vendor_id = #{vendorId}
     </update>
 
 </mapper>
