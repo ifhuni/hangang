@@ -1,5 +1,6 @@
 package com.hangang.web.activity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -12,7 +13,9 @@ public interface ActivityMapper {
 
     List<Activity> findByVendorId(Long vendorId);
 
-    List<Activity> search(@Param("keyword") String keyword);
+    List<Activity> search(@Param("keyword") String keyword,
+                           @Param("date") LocalDate date,
+                           @Param("headcount") Integer headcount);
 
     int insertActivity(Activity activity);
 

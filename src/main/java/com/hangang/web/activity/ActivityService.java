@@ -1,5 +1,6 @@
 package com.hangang.web.activity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -13,8 +14,8 @@ public class ActivityService {
         this.activityMapper = activityMapper;
     }
 
-    public List<Activity> listPublicActivities(String keyword) {
-        return activityMapper.search(keyword);
+    public List<Activity> listPublicActivities(String keyword, LocalDate date, Integer headcount) {
+        return activityMapper.search(keyword, date, headcount);
     }
 
     public Activity getActivity(Long activityId) {

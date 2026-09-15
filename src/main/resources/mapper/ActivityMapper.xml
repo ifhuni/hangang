@@ -44,6 +44,12 @@
         <if test="keyword != null and keyword != ''">
             AND a.title LIKE CONCAT('%', #{keyword}, '%')
         </if>
+        <if test="date != null">
+            AND a.activity_start_date &lt;= #{date} AND a.activity_end_date &gt;= #{date}
+        </if>
+        <if test="headcount != null">
+            AND a.daily_capacity &gt;= #{headcount}
+        </if>
         ORDER BY a.created_at DESC
     </select>
 

@@ -5,8 +5,10 @@
     <title>활동 목록 - 한강웹</title>
     <style>
         body { font-family: sans-serif; max-width: 960px; margin: 40px auto; }
-        .search { margin-bottom: 24px; }
-        .search input { padding: 8px; width: 260px; }
+        .search { margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .search input { padding: 8px; }
+        .search input[name="keyword"] { width: 220px; }
+        .search input[name="headcount"] { width: 90px; }
         .search button { padding: 8px 16px; }
         .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
         .card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; text-decoration: none; color: inherit; }
@@ -21,6 +23,8 @@
     <h1>활동 목록</h1>
 
     <form class="search" th:action="@{/activities}" method="get">
+        <input type="date" name="date" th:value="${date}">
+        <input type="number" name="headcount" min="1" placeholder="인원수" th:value="${headcount}">
         <input type="text" name="keyword" placeholder="활동명 검색" th:value="${keyword}">
         <button type="submit">검색</button>
     </form>

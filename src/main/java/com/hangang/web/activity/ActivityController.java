@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,9 +26,14 @@ public class ActivityController {
     }
 
     @GetMapping("/activities")
-    public String list(@RequestParam(required = false) String keyword, Model model) {
-        model.addAttribute("activities", activityService.listPublicActivities(keyword));
+    public String list(@RequestParam(required = false) String keyword,
+                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                        @RequestParam(required = false) Integer headcount,
+                        Model model) {
+        model.addAttribute("activities", activityService.listPublicActivities(keyword, date, headcount));
         model.addAttribute("keyword", keyword);
+        model.addAttribute("date", date);
+        model.addAttribute("headcount", headcount);
         return "activity/list";
     }
 
