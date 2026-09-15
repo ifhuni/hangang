@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>한강웹</title>
+    <style>
+        :root {
+            --ground: #f6f7f9;
+            --surface: #ffffff;
+            --border: #e3e6ea;
+            --text: #1f2a37;
+            --text-muted: #6b7684;
+            --accent: #2980b9;
+            --accent-soft: #eaf2fc;
+            --tag-event: #d1662f;
+            --tag-event-soft: #fbeee5;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--ground);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, Roboto, sans-serif;
+            padding: 0 16px 64px;
+        }
+        a { color: inherit; }
+        .wrap { max-width: 1040px; margin: 0 auto; }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-block: 20px;
+        }
+        .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+        .brand span { color: var(--accent); }
+        .topnav { display: flex; gap: 20px; font-size: 14px; color: var(--text-muted); }
+        .topnav a { text-decoration: none; }
+        .topnav a:hover { color: var(--text); }
+
+        .hero {
+            background: linear-gradient(180deg, var(--accent-soft), var(--surface) 78%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px clamp(20px, 4vw, 40px);
+        }
+        .hero h1 { margin: 0 0 6px; font-size: clamp(22px, 3vw, 30px); line-height: 1.3; text-wrap: balance; }
+        .hero p { margin: 0 0 24px; color: var(--text-muted); font-size: 14.5px; }
+
+        .search {
+            display: grid;
+            grid-template-columns: 1fr 1fr 140px auto;
+            gap: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+        }
+        @media (max-width: 720px) {
+            .search { grid-template-columns: 1fr 1fr; }
+            .search .field:last-of-type { grid-column: 1 / -1; }
+            .search button { grid-column: 1 / -1; }
+        }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .field input {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 10px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text);
+            background: var(--ground);
+        }
+        .field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+        .search button {
+            align-self: end;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 14.5px;
+            font-weight: 700;
+            padding: 10px 22px;
+            cursor: pointer;
+        }
+        .search button:hover { filter: brightness(1.06); }
+        .search-hint { margin: 10px 2px 0; font-size: 12px; color: var(--text-muted); }
+
+        .section { margin-top: 40px; }
+        .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+        .section-head h2 { margin: 0; font-size: 17px; font-weight: 800; }
+
+        .board-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; }
+        @media (max-width: 720px) { .board-grid { grid-template-columns: 1fr; } }
+        .board { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        .board ul { list-style: none; margin: 0; padding: 0; }
+        .board li { border-top: 1px solid var(--border); }
+        .board li:first-child { border-top: none; }
+        .board-link {
+            all: unset;
+            box-sizing: border-box;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            width: 100%;
+            padding: 13px 16px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .board-link:hover { background: var(--accent-soft); }
+        .tag { flex: none; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; color: #fff; background: var(--accent); }
+        .tag.event { background: var(--tag-event); }
+        .board-link .title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .board-link .date { flex: none; font-size: 12.5px; color: var(--text-muted); }
+        .empty { padding: 16px; font-size: 13.5px; color: var(--text-muted); }
+
+        .event-cards { display: grid; gap: 12px; padding: 14px; }
+        .event-card {
+            all: unset;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 12px;
+            align-items: center;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 10px;
+            padding: 4px;
+        }
+        .event-card:hover { background: var(--accent-soft); }
+        .event-date { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--tag-event-soft); color: var(--tag-event); border-radius: 10px; padding: 8px 0; font-weight: 800; line-height: 1.1; }
+        .event-date .d { font-size: 18px; }
+        .event-date .m { font-size: 11px; }
+        .event-card .title { font-size: 14px; font-weight: 600; margin: 0 0 2px; }
+        .event-card .desc { margin: 0; font-size: 12.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .modal-meta { font-size: 12.5px; color: var(--text-muted); margin: 0 0 12px; }
+        .modal-body-text { white-space: pre-wrap; font-size: 14.5px; line-height: 1.6; margin: 0; }
+
+        footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
+    </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="topbar">
+        <div class="brand">한강<span>웹</span></div>
+        <nav class="topnav">
+            <a th:href="@{/activities}">활동 목록</a>
+            <a th:href="@{/vendor/login}">업체 로그인</a>
+        </nav>
+    </div>
+
+    <section class="hero">
+        <h1>한강에서 오늘, 무엇을 해볼까요?</h1>
+        <p>날짜와 인원을 입력하고 참여 가능한 활동을 찾아보세요.</p>
+
+        <form class="search" th:action="@{/activities}" method="get">
+            <div class="field">
+                <label for="date">참여 날짜</label>
+                <input type="date" id="date" name="date">
+            </div>
+            <div class="field">
+                <label for="headcount">인원수</label>
+                <input type="number" id="headcount" name="headcount" min="1" value="1">
+            </div>
+            <div class="field">
+                <label for="keyword">활동명</label>
+                <input type="text" id="keyword" name="keyword" placeholder="예: 카약">
+            </div>
+            <button type="submit">조회</button>
+        </form>
+        <p class="search-hint">조회 시 활동 목록 화면으로 이동합니다.</p>
+    </section>
+
+    <section class="section">
+        <div class="board-grid">
+
+            <div>
+                <div class="section-head">
+                    <h2>공지사항</h2>
+                </div>
+                <div class="board">
+                    <p th:if="${#lists.isEmpty(notices)}" class="empty">등록된 공지사항이 없습니다.</p>
+                    <ul th:unless="${#lists.isEmpty(notices)}">
+                        <li th:each="notice : ${notices}">
+                            <button type="button" class="board-link" data-bs-toggle="modal"
+                                    th:data-bs-target="'#noticeModal' + ${notice.noticeId}">
+                                <span class="tag" th:text="${notice.pinned} ? '고정' : '공지'"></span>
+                                <span class="title" th:text="${notice.title}"></span>
+                                <span class="date" th:text="${#temporals.format(notice.publishDate, 'MM.dd')}"></span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <div class="section-head">
+                    <h2>이벤트</h2>
+                </div>
+                <div class="board">
+                    <p th:if="${#lists.isEmpty(events)}" class="empty">등록된 이벤트가 없습니다.</p>
+                    <div class="event-cards" th:unless="${#lists.isEmpty(events)}">
+                        <button type="button" class="event-card" th:each="event : ${events}" data-bs-toggle="modal"
+                                th:data-bs-target="'#eventModal' + ${event.eventId}">
+                            <div class="event-date">
+                                <span class="d" th:text="${#temporals.format(event.eventDate, 'dd')}"></span>
+                                <span class="m" th:text="${eventMonthAbbr.get(event.eventId)}"></span>
+                            </div>
+                            <div>
+                                <p class="title" th:text="${event.title}"></p>
+                                <p class="desc" th:text="${event.location}"></p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>한강웹</footer>
+
+</div>
+
+<!-- 공지사항 상세 모달 -->
+<div class="modal fade" th:each="notice : ${notices}" th:id="'noticeModal' + ${notice.noticeId}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" th:text="${notice.title}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-meta" th:text="${notice.publishDate}"></p>
+                <p class="modal-body-text" th:text="${notice.content}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 이벤트 상세 모달 -->
+<div class="modal fade" th:each="event : ${events}" th:id="'eventModal' + ${event.eventId}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" th:text="${event.title}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-meta" th:text="${event.eventDate} + ${event.location != null and !event.location.isEmpty() ? ' · ' + event.location : ''}"></p>
+                <p class="modal-body-text" th:text="${event.description}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/layout :: js}"></th:block>
+</body>
+</html>

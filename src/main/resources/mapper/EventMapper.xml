@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hangang.web.event.EventMapper">
+
+    <sql id="columns">
+        event_id, title, description, location, event_date, pinned, hidden, publish_date, created_at, updated_at
+    </sql>
+
+    <select id="findAllForAdmin" resultType="com.hangang.web.event.Event">
+        SELECT <include refid="columns"/>
+        FROM event
+        ORDER BY pinned DESC, event_date DESC
+    </select>
+
+    <select id="findVisible" resultType="com.hangang.web.event.Event">
+        SELECT <include refid="columns"/>
+        FROM event
+        WHERE hidden = FALSE AND publish_date &lt;= CURRENT_DATE
+        ORDER BY pinned DESC, event_date ASC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findById" parameterType="long" resultType="com.hangang.web.event.Event">
+        SELECT <include refid="columns"/>
+        FROM event
+        WHERE event_id = #{eventId}
+    </select>
+
+    <insert id="insertEvent" parameterType="com.hangang.web.event.Event"
+            useGeneratedKeys="true" keyProperty="eventId">
+        INSERT INTO event (title, description, location, event_date, pinned, publish_date)
+        VALUES (#{title}, #{description}, #{location}, #{eventDate}, #{pinned}, #{publishDate})
+    </insert>
+
+    <update id="updateEvent" parameterType="com.hangang.web.event.Event">
+        UPDATE event
+        SET title = #{title},
+            description = #{description},
+            location = #{location},
+            event_date = #{eventDate},
+            pinned = #{pinned},
+            publish_date = #{publishDate},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE event_id = #{eventId}
+    </update>
+
+    <update id="updateHidden">
+        UPDATE event
+        SET hidden = #{hidden}, updated_at = CURRENT_TIMESTAMP
+        WHERE event_id = #{eventId}
+    </update>
+
+</mapper>

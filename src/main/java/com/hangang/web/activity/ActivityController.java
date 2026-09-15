@@ -24,7 +24,7 @@ public class ActivityController {
         this.applicationService = applicationService;
     }
 
-    @GetMapping({"/", "/activities"})
+    @GetMapping("/activities")
     public String list(@RequestParam(required = false) String keyword, Model model) {
         model.addAttribute("activities", activityService.listPublicActivities(keyword));
         model.addAttribute("keyword", keyword);

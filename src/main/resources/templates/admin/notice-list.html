@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항 관리 - 한강웹</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 40px auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; font-size: 14px; }
+        th { background: #f5f5f5; }
+        .new { display: inline-block; padding: 8px 16px; background: #2980b9; color: white; text-decoration: none; }
+        .empty { color: #888; margin-top: 24px; }
+        .pin { color: #2980b9; font-weight: bold; }
+        .hidden-row { color: #aaa; }
+        form.inline { display: inline; }
+        button { padding: 5px 10px; cursor: pointer; }
+    </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
+</head>
+<body>
+    <p><a th:href="@{/admin/vendors}">← 관리자 홈</a> · <a th:href="@{/admin/events}">이벤트 관리</a></p>
+    <h1>공지사항 관리</h1>
+    <a class="new" th:href="@{/admin/notices/new}">+ 새 공지사항</a>
+
+    <p th:if="${#lists.isEmpty(notices)}" class="empty">등록된 공지사항이 없습니다.</p>
+
+    <table th:unless="${#lists.isEmpty(notices)}">
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>게시일</th>
+                <th>고정</th>
+                <th>상태</th>
+                <th>처리</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="notice : ${notices}" th:classappend="${notice.hidden} ? 'hidden-row' : ''">
+                <td th:text="${notice.title}"></td>
+                <td th:text="${notice.publishDate}"></td>
+                <td th:text="${notice.pinned} ? '고정' : ''" class="pin"></td>
+                <td th:text="${notice.hidden} ? '숨김' : '노출'"></td>
+                <td>
+                    <a th:href="@{/admin/notices/{id}/edit(id=${notice.noticeId})}">수정</a>
+                    <form class="inline" th:if="${!notice.hidden}" th:action="@{/admin/notices/{id}/hide(id=${notice.noticeId})}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit">숨기기</button>
+                    </form>
+                    <form class="inline" th:if="${notice.hidden}" th:action="@{/admin/notices/{id}/show(id=${notice.noticeId})}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit">노출</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
+</body>
+</html>
