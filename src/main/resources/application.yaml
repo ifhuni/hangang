@@ -1,6 +1,9 @@
 spring:
   application:
     name: web
+  sql:
+    init:
+      mode: always
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres

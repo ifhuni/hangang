@@ -1,16 +1,17 @@
 package com.hangang.web.vendor;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class VendorService {
 
     private final VendorMapper vendorMapper;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
-    public VendorService(VendorMapper vendorMapper) {
+    public VendorService(VendorMapper vendorMapper, PasswordEncoder passwordEncoder) {
         this.vendorMapper = vendorMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void signup(VendorSignupForm form) {

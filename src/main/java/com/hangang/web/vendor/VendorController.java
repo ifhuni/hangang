@@ -25,6 +25,11 @@ public class VendorController {
         return "vendor/signup";
     }
 
+    @GetMapping("/login")
+    public String loginForm() {
+        return "vendor/login";
+    }
+
     @PostMapping("/signup")
     public String signup(@Valid @ModelAttribute VendorSignupForm vendorSignupForm,
                           BindingResult bindingResult,

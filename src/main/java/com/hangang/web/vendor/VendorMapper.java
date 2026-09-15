@@ -7,5 +7,7 @@ public interface VendorMapper {
 
     int existsByEmail(String email);
 
+    Vendor findByEmail(String email);
+
     int insertVendor(Vendor vendor);
 }

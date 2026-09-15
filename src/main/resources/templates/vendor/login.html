@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>업체 로그인 - 한강웹</title>
+    <style>
+        body { font-family: sans-serif; max-width: 480px; margin: 60px auto; }
+        .field { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; }
+        .error { color: #c0392b; font-size: 13px; margin-top: 4px; }
+        .notice { color: #2980b9; font-size: 13px; margin-top: 4px; }
+        button { padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>업체 로그인</h1>
+
+    <p th:if="${param.error}" class="error">이메일 또는 비밀번호가 올바르지 않습니다.</p>
+    <p th:if="${param.pending}" class="error">관리자 승인 대기 중인 계정입니다.</p>
+    <p th:if="${param.logout}" class="notice">로그아웃되었습니다.</p>
+
+    <form th:action="@{/vendor/login}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <div class="field">
+            <label>이메일</label>
+            <input type="email" name="email">
+        </div>
+        <div class="field">
+            <label>비밀번호</label>
+            <input type="password" name="password">
+        </div>
+        <button type="submit">로그인</button>
+    </form>
+
+    <p><a th:href="@{/vendor/signup}">업체 회원가입</a></p>
+</body>
+</html>
