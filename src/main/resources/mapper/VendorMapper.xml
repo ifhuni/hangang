@@ -20,4 +20,23 @@
         VALUES (#{businessName}, #{businessRegNo}, #{ceoName}, #{phone}, #{email}, #{password}, 'PENDING')
     </insert>
 
+    <select id="findByStatus" parameterType="string" resultType="com.hangang.web.vendor.Vendor">
+        SELECT vendor_id, business_name, business_reg_no, ceo_name, phone, email, password, status, created_at, approved_at
+        FROM vendor
+        WHERE status = #{status}
+        ORDER BY created_at
+    </select>
+
+    <update id="approve" parameterType="long">
+        UPDATE vendor
+        SET status = 'APPROVED', approved_at = CURRENT_TIMESTAMP
+        WHERE vendor_id = #{vendorId} AND status = 'PENDING'
+    </update>
+
+    <update id="reject" parameterType="long">
+        UPDATE vendor
+        SET status = 'REJECTED'
+        WHERE vendor_id = #{vendorId} AND status = 'PENDING'
+    </update>
+
 </mapper>

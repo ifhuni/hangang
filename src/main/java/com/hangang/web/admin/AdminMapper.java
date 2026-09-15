@@ -1,0 +1,9 @@
+package com.hangang.web.admin;
+
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface AdminMapper {
+
+    Admin findByUsername(String username);
+}

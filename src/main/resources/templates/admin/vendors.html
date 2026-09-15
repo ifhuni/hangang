@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>업체 가입 승인 대기 목록 - 한강웹</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 40px auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; font-size: 14px; }
+        th { background: #f5f5f5; }
+        form.inline { display: inline; }
+        button { padding: 6px 12px; margin-right: 4px; cursor: pointer; }
+        .approve { background: #2980b9; color: white; border: none; }
+        .reject { background: #c0392b; color: white; border: none; }
+        .empty { color: #888; margin-top: 24px; }
+    </style>
+</head>
+<body>
+    <h1>업체 가입 승인 대기 목록</h1>
+    <form th:action="@{/admin/logout}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit">로그아웃</button>
+    </form>
+
+    <p th:if="${#lists.isEmpty(vendors)}" class="empty">승인 대기 중인 업체가 없습니다.</p>
+
+    <table th:unless="${#lists.isEmpty(vendors)}">
+        <thead>
+            <tr>
+                <th>상호명</th>
+                <th>사업자등록번호</th>
+                <th>대표자명</th>
+                <th>연락처</th>
+                <th>이메일</th>
+                <th>가입 신청일</th>
+                <th>처리</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="vendor : ${vendors}">
+                <td th:text="${vendor.businessName}"></td>
+                <td th:text="${vendor.businessRegNo}"></td>
+                <td th:text="${vendor.ceoName}"></td>
+                <td th:text="${vendor.phone}"></td>
+                <td th:text="${vendor.email}"></td>
+                <td th:text="${#temporals.format(vendor.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td>
+                    <form class="inline" th:action="@{/admin/vendors/{id}/approve(id=${vendor.vendorId})}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="approve">승인</button>
+                    </form>
+                    <form class="inline" th:action="@{/admin/vendors/{id}/reject(id=${vendor.vendorId})}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="reject">거부</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
