@@ -1,6 +1,8 @@
 spring:
   application:
     name: web
+  thymeleaf:
+    cache: false
   sql:
     init:
       mode: always

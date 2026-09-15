@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hangang.web.application.ApplicationMapper">
+
+    <resultMap id="applicationResultMap" type="com.hangang.web.application.Application">
+        <id property="applicationId" column="application_id"/>
+        <result property="activityId" column="activity_id"/>
+        <result property="activityTitle" column="activity_title"/>
+        <result property="applicantName" column="applicant_name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="gender" column="gender"/>
+        <result property="participationDate" column="participation_date"/>
+        <result property="status" column="status"/>
+        <result property="token" column="token"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="approvedAt" column="approved_at"/>
+        <result property="cancelledAt" column="cancelled_at"/>
+    </resultMap>
+
+    <select id="findByToken" parameterType="string" resultMap="applicationResultMap">
+        SELECT p.application_id, p.activity_id, a.title AS activity_title, p.applicant_name, p.phone, p.email,
+               p.gender, p.participation_date, p.status, p.token, p.created_at, p.approved_at, p.cancelled_at
+        FROM application p
+        JOIN activity a ON a.activity_id = p.activity_id
+        WHERE p.token = #{token}
+    </select>
+
+    <select id="countByActivity" parameterType="long" resultType="com.hangang.web.application.ParticipationCount">
+        SELECT participation_date, COUNT(*) AS count
+        FROM application
+        WHERE activity_id = #{activityId} AND status != 'CANCELLED'
+        GROUP BY participation_date
+    </select>
+
+    <insert id="insertApplication" parameterType="com.hangang.web.application.Application"
+            useGeneratedKeys="true" keyProperty="applicationId">
+        INSERT INTO application (activity_id, applicant_name, phone, email, gender, participation_date, token)
+        VALUES (#{activityId}, #{applicantName}, #{phone}, #{email}, #{gender}, #{participationDate}, #{token})
+    </insert>
+
+    <update id="cancel" parameterType="string">
+        UPDATE application
+        SET status = 'CANCELLED', cancelled_at = CURRENT_TIMESTAMP
+        WHERE token = #{token} AND status != 'CANCELLED'
+    </update>
+
+</mapper>

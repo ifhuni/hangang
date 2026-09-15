@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 활동 관리 - 한강웹</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 40px auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; font-size: 14px; }
+        th { background: #f5f5f5; }
+        .new { display: inline-block; padding: 8px 16px; background: #2980b9; color: white; text-decoration: none; }
+        .empty { color: #888; margin-top: 24px; }
+    </style>
+</head>
+<body>
+    <p><a th:href="@{/vendor/dashboard}">← 대시보드</a></p>
+    <h1>내 활동 관리</h1>
+    <a class="new" th:href="@{/vendor/activities/new}">+ 새 활동 등록</a>
+
+    <p th:if="${#lists.isEmpty(activities)}" class="empty">등록된 활동이 없습니다.</p>
+
+    <table th:unless="${#lists.isEmpty(activities)}">
+        <thead>
+            <tr>
+                <th>제목</th>
+                <th>활동 기간</th>
+                <th>하루당 정원</th>
+                <th>금액</th>
+                <th>상태</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="activity : ${activities}">
+                <td th:text="${activity.title}"></td>
+                <td th:text="${activity.activityStartDate} + ' ~ ' + ${activity.activityEndDate}"></td>
+                <td th:text="${activity.dailyCapacity} + '명'"></td>
+                <td th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + '원'"></td>
+                <td th:text="${activity.status}"></td>
+                <td><a th:href="@{/vendor/activities/{id}/edit(id=${activity.activityId})}">수정</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

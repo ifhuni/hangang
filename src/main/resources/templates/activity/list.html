@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>활동 목록 - 한강웹</title>
+    <style>
+        body { font-family: sans-serif; max-width: 960px; margin: 40px auto; }
+        .search { margin-bottom: 24px; }
+        .search input { padding: 8px; width: 260px; }
+        .search button { padding: 8px 16px; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; text-decoration: none; color: inherit; }
+        .card h3 { margin: 0 0 8px; }
+        .card .vendor { color: #888; font-size: 13px; margin-bottom: 8px; }
+        .card .price { font-weight: bold; }
+        .empty { color: #888; margin-top: 24px; }
+    </style>
+</head>
+<body>
+    <h1>활동 목록</h1>
+
+    <form class="search" th:action="@{/activities}" method="get">
+        <input type="text" name="keyword" placeholder="활동명 검색" th:value="${keyword}">
+        <button type="submit">검색</button>
+    </form>
+
+    <p th:if="${#lists.isEmpty(activities)}" class="empty">등록된 활동이 없습니다.</p>
+
+    <div class="cards">
+        <a class="card" th:each="activity : ${activities}" th:href="@{/activities/{id}(id=${activity.activityId})}">
+            <div class="vendor" th:text="${activity.vendorBusinessName}"></div>
+            <h3 th:text="${activity.title}"></h3>
+            <div th:text="${activity.activityStartDate} + ' ~ ' + ${activity.activityEndDate}"></div>
+            <div class="price" th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + '원'"></div>
+        </a>
+    </div>
+</body>
+</html>

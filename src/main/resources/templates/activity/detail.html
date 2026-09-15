@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${activity.title} + ' - 한강웹'"></title>
+    <style>
+        body { font-family: sans-serif; max-width: 720px; margin: 40px auto; }
+        .vendor { color: #888; margin-bottom: 8px; }
+        .meta { margin: 24px 0; }
+        .meta div { margin-bottom: 6px; }
+        .price { font-size: 20px; font-weight: bold; margin: 16px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+        th { background: #f5f5f5; }
+        .apply-row { padding: 6px 14px; background: #2980b9; color: white; border: none; font-size: 13px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <p><a th:href="@{/activities}">← 목록으로</a></p>
+
+    <div class="vendor" th:text="${activity.vendorBusinessName}"></div>
+    <h1 th:text="${activity.title}"></h1>
+    <p th:text="${activity.description}"></p>
+
+    <div class="price" th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + '원'"></div>
+
+    <div class="meta">
+        <div>등록 기간: <span th:text="${activity.registrationStartDate} + ' ~ ' + ${activity.registrationEndDate}"></span></div>
+        <div>활동 기간: <span th:text="${activity.activityStartDate} + ' ~ ' + ${activity.activityEndDate}"></span></div>
+        <div>하루당 정원: <span th:text="${activity.dailyCapacity} + '명'"></span></div>
+    </div>
+
+    <table>
+        <thead>
+            <tr><th>날짜</th><th>정원</th><th>현재 신청 인원</th><th>신청</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="row : ${dateRows}">
+                <td th:text="${row.date}"></td>
+                <td th:text="${row.capacity} + '명'"></td>
+                <td th:text="${row.appliedCount} + '명'"></td>
+                <td>
+                    <a th:href="@{/activities/{id}/apply(id=${activity.activityId}, date=${row.date})}">
+                        <button class="apply-row" type="button">신청</button>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

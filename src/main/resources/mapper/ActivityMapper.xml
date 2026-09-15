@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hangang.web.activity.ActivityMapper">
+
+    <resultMap id="activityResultMap" type="com.hangang.web.activity.Activity">
+        <id property="activityId" column="activity_id"/>
+        <result property="vendorId" column="vendor_id"/>
+        <result property="vendorBusinessName" column="vendor_business_name"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="price" column="price"/>
+        <result property="registrationStartDate" column="registration_start_date"/>
+        <result property="registrationEndDate" column="registration_end_date"/>
+        <result property="activityStartDate" column="activity_start_date"/>
+        <result property="activityEndDate" column="activity_end_date"/>
+        <result property="dailyCapacity" column="daily_capacity"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="selectActivityWithVendor">
+        SELECT a.activity_id, a.vendor_id, v.business_name AS vendor_business_name, a.title, a.description, a.price,
+               a.registration_start_date, a.registration_end_date, a.activity_start_date, a.activity_end_date,
+               a.daily_capacity, a.status, a.created_at, a.updated_at
+        FROM activity a
+        JOIN vendor v ON v.vendor_id = a.vendor_id
+    </sql>
+
+    <select id="findById" parameterType="long" resultMap="activityResultMap">
+        <include refid="selectActivityWithVendor"/>
+        WHERE a.activity_id = #{activityId}
+    </select>
+
+    <select id="findByVendorId" parameterType="long" resultMap="activityResultMap">
+        <include refid="selectActivityWithVendor"/>
+        WHERE a.vendor_id = #{vendorId}
+        ORDER BY a.created_at DESC
+    </select>
+
+    <select id="search" resultMap="activityResultMap">
+        <include refid="selectActivityWithVendor"/>
+        WHERE a.status = 'ACTIVE'
+        <if test="keyword != null and keyword != ''">
+            AND a.title LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        ORDER BY a.created_at DESC
+    </select>
+
+    <insert id="insertActivity" parameterType="com.hangang.web.activity.Activity"
+            useGeneratedKeys="true" keyProperty="activityId">
+        INSERT INTO activity (vendor_id, title, description, price, registration_start_date, registration_end_date,
+                               activity_start_date, activity_end_date, daily_capacity, status)
+        VALUES (#{vendorId}, #{title}, #{description}, #{price}, #{registrationStartDate}, #{registrationEndDate},
+                #{activityStartDate}, #{activityEndDate}, #{dailyCapacity}, 'ACTIVE')
+    </insert>
+
+    <update id="updateActivity" parameterType="com.hangang.web.activity.Activity">
+        UPDATE activity
+        SET title = #{title},
+            description = #{description},
+            price = #{price},
+            registration_start_date = #{registrationStartDate},
+            registration_end_date = #{registrationEndDate},
+            activity_start_date = #{activityStartDate},
+            activity_end_date = #{activityEndDate},
+            daily_capacity = #{dailyCapacity},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE activity_id = #{activityId} AND vendor_id = #{vendorId}
+    </update>
+
+</mapper>
