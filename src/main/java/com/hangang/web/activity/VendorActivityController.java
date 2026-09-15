@@ -64,6 +64,7 @@ public class VendorActivityController {
         ActivityForm form = new ActivityForm();
         form.setTitle(activity.getTitle());
         form.setDescription(activity.getDescription());
+        form.setLocation(activity.getLocation());
         form.setPrice(activity.getPrice());
         form.setRegistrationStartDate(activity.getRegistrationStartDate());
         form.setRegistrationEndDate(activity.getRegistrationEndDate());

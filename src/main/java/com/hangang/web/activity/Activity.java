@@ -10,6 +10,7 @@ public class Activity {
     private String vendorBusinessName;
     private String title;
     private String description;
+    private String location;
     private Integer price;
     private LocalDate registrationStartDate;
     private LocalDate registrationEndDate;
@@ -58,6 +59,14 @@ public class Activity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Integer getPrice() {

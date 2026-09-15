@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS activity (
     vendor_id                BIGINT       NOT NULL REFERENCES vendor(vendor_id),
     title                    VARCHAR(200) NOT NULL,
     description              TEXT,
+    location                 VARCHAR(200),
     price                    INTEGER      NOT NULL,
     registration_start_date  DATE         NOT NULL, -- 신청 등록 기간 시작
     registration_end_date    DATE         NOT NULL, -- 신청 등록 기간 종료

@@ -63,6 +63,7 @@ public class ActivityService {
     private void applyForm(Activity activity, ActivityForm form) {
         activity.setTitle(form.getTitle());
         activity.setDescription(form.getDescription());
+        activity.setLocation(form.getLocation());
         activity.setPrice(form.getPrice());
         activity.setRegistrationStartDate(form.getRegistrationStartDate());
         activity.setRegistrationEndDate(form.getRegistrationEndDate());

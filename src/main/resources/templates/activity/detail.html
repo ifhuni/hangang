@@ -26,6 +26,7 @@
     <div class="price" th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + '원'"></div>
 
     <div class="meta">
+        <div th:if="${activity.location != null and !activity.location.isEmpty()}">장소: <span th:text="${activity.location}"></span></div>
         <div>등록 기간: <span th:text="${activity.registrationStartDate} + ' ~ ' + ${activity.registrationEndDate}"></span></div>
         <div>활동 기간: <span th:text="${activity.activityStartDate} + ' ~ ' + ${activity.activityEndDate}"></span></div>
         <div>하루당 정원: <span th:text="${activity.dailyCapacity} + '명'"></span></div>

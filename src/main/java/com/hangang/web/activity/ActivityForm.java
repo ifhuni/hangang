@@ -15,6 +15,9 @@ public class ActivityForm {
 
     private String description;
 
+    @NotBlank(message = "장소를 입력해주세요.")
+    private String location;
+
     @NotNull(message = "금액을 입력해주세요.")
     @Min(value = 0, message = "금액은 0 이상이어야 합니다.")
     private Integer price;
@@ -53,6 +56,14 @@ public class ActivityForm {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Integer getPrice() {

@@ -202,6 +202,7 @@
             <div class="meta-row">
                 <span th:text="'📅 ' + ${activity.activityStartDate} + ' – ' + ${activity.activityEndDate}"></span>
                 <span th:text="'👥 정원 ' + ${activity.dailyCapacity} + '명'"></span>
+                <span th:if="${activity.location != null and !activity.location.isEmpty()}" th:text="'📍 ' + ${activity.location}"></span>
             </div>
             <div class="card-foot">
                 <div class="price">

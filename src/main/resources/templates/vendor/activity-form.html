@@ -35,6 +35,11 @@
             <textarea th:field="*{description}"></textarea>
         </div>
         <div class="field">
+            <label>장소</label>
+            <input type="text" th:field="*{location}" placeholder="예: 뚝섬한강공원">
+            <div class="error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
+        </div>
+        <div class="field">
             <label>금액(원)</label>
             <input type="number" th:field="*{price}">
             <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
