@@ -15,7 +15,8 @@ public interface ActivityMapper {
 
     List<Activity> search(@Param("keyword") String keyword,
                            @Param("date") LocalDate date,
-                           @Param("headcount") Integer headcount);
+                           @Param("headcount") Integer headcount,
+                           @Param("sort") String sort);
 
     int insertActivity(Activity activity);
 

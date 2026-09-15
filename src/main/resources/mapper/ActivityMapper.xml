@@ -50,7 +50,12 @@
         <if test="headcount != null">
             AND a.daily_capacity &gt;= #{headcount}
         </if>
-        ORDER BY a.created_at DESC
+        <choose>
+            <when test="sort == 'soon'">ORDER BY a.activity_start_date ASC</when>
+            <when test="sort == 'price_asc'">ORDER BY a.price ASC</when>
+            <when test="sort == 'price_desc'">ORDER BY a.price DESC</when>
+            <otherwise>ORDER BY a.created_at DESC</otherwise>
+        </choose>
     </select>
 
     <insert id="insertActivity" parameterType="com.hangang.web.activity.Activity"

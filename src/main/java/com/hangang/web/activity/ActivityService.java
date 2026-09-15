@@ -14,8 +14,8 @@ public class ActivityService {
         this.activityMapper = activityMapper;
     }
 
-    public List<Activity> listPublicActivities(String keyword, LocalDate date, Integer headcount) {
-        return activityMapper.search(keyword, date, headcount);
+    public List<Activity> listPublicActivities(String keyword, LocalDate date, Integer headcount, String sort) {
+        return activityMapper.search(keyword, date, headcount, sort);
     }
 
     public Activity getActivity(Long activityId) {
