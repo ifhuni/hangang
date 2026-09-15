@@ -11,6 +11,7 @@
         .error { color: #c0392b; font-size: 13px; margin-top: 4px; }
         button { padding: 10px 20px; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <p><a th:href="@{/activities/{id}(id=${activity.activityId})}">← 활동으로 돌아가기</a></p>
@@ -54,5 +55,6 @@
 
         <button type="submit">신청하기</button>
     </form>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

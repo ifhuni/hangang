@@ -12,6 +12,7 @@
         .notice { color: #2980b9; font-size: 13px; margin-top: 4px; }
         button { padding: 10px 20px; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <h1>업체 로그인</h1>
@@ -34,5 +35,6 @@
     </form>
 
     <p><a th:href="@{/vendor/signup}">업체 회원가입</a></p>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

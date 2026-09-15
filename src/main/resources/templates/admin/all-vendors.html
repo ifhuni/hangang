@@ -14,6 +14,7 @@
         .status-REJECTED { background: #e74c3c33; color: #c0392b; }
         .empty { color: #888; margin-top: 24px; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <p><a th:href="@{/admin/vendors}">← 승인 대기 목록</a></p>
@@ -54,5 +55,6 @@
             </tr>
         </tbody>
     </table>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

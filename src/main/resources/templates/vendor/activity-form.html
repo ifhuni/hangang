@@ -14,6 +14,7 @@
         .row .field { flex: 1; }
         button { padding: 10px 20px; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <h1 th:text="${activityId} ? '활동 수정' : '활동 등록'"></h1>
@@ -70,5 +71,6 @@
 
         <button type="submit" th:text="${activityId} ? '수정' : '등록'"></button>
     </form>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

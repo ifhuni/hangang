@@ -12,6 +12,7 @@
         .notice { color: #2980b9; font-size: 13px; margin-top: 4px; }
         button { padding: 10px 20px; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <h1>관리자 로그인</h1>
@@ -31,5 +32,6 @@
         </div>
         <button type="submit">로그인</button>
     </form>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

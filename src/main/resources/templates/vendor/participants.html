@@ -16,6 +16,7 @@
         .error { color: #c0392b; font-size: 13px; margin: 12px 0; }
         .empty { color: #888; margin-top: 24px; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <p><a th:href="@{/vendor/activities}">← 내 활동 관리</a></p>
@@ -71,5 +72,6 @@
             </tr>
         </tbody>
     </table>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

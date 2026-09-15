@@ -11,6 +11,7 @@
         .new { display: inline-block; padding: 8px 16px; background: #2980b9; color: white; text-decoration: none; }
         .empty { color: #888; margin-top: 24px; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <p><a th:href="@{/vendor/dashboard}">← 대시보드</a></p>
@@ -43,5 +44,6 @@
             </tr>
         </tbody>
     </table>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

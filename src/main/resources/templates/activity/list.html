@@ -15,6 +15,7 @@
         .card .price { font-weight: bold; }
         .empty { color: #888; margin-top: 24px; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <h1>활동 목록</h1>
@@ -34,5 +35,6 @@
             <div class="price" th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + '원'"></div>
         </a>
     </div>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

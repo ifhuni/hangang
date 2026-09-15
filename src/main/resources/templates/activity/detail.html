@@ -14,6 +14,7 @@
         th { background: #f5f5f5; }
         .apply-row { padding: 6px 14px; background: #2980b9; color: white; border: none; font-size: 13px; cursor: pointer; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <p><a th:href="@{/activities}">← 목록으로</a></p>
@@ -47,5 +48,6 @@
             </tr>
         </tbody>
     </table>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

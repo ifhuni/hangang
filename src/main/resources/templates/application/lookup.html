@@ -17,6 +17,7 @@
         button { padding: 10px 20px; background: #c0392b; color: white; border: none; }
         .list-link { padding: 10px 20px; background: #7f8c8d; color: white; text-decoration: none; display: inline-block; box-sizing: border-box; }
     </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <h1>내 신청 조회</h1>
@@ -49,5 +50,6 @@
         </form>
         <a class="list-link" th:href="@{/activities}">활동 목록으로</a>
     </div>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

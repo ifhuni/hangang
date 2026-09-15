@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>가입 신청 완료 - 한강웹</title>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <h1>가입 신청이 접수되었습니다</h1>
     <p>관리자 승인 후 이용하실 수 있습니다.</p>
     <p><a href="/vendor/login">로그인 페이지로 이동</a></p>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

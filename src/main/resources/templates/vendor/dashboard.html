@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>업체 대시보드 - 한강웹</title>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
     <h1 th:text="${vendor.businessName} + '님, 환영합니다'"></h1>
@@ -12,5 +13,6 @@
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <button type="submit">로그아웃</button>
     </form>
+    <th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>
