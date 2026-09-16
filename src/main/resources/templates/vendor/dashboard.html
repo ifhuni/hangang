@@ -3,16 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <title>업체 대시보드 - 한강웹</title>
+    <style>
+        :root {
+            --ground: #f6f7f9;
+            --surface: #ffffff;
+            --border: #e3e6ea;
+            --text: #1f2a37;
+            --text-muted: #6b7684;
+            --accent: #2980b9;
+            --accent-soft: #eaf2fc;
+            --success: #1e8449;
+            --success-soft: #e9f7ef;
+            --pending: #b7950b;
+            --pending-soft: #fbf3d9;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--ground);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, Roboto, sans-serif;
+            padding: 0 16px 64px;
+        }
+        a { color: inherit; text-decoration: none; }
+        .wrap { max-width: 1040px; margin: 0 auto; }
+
+        .topbar { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
+        .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+        .brand span { color: var(--accent); }
+        .topnav { display: flex; align-items: center; gap: 16px; font-size: 13.5px; color: var(--text-muted); }
+        .topnav a:hover { color: var(--text); }
+        .logout-btn { border: 1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text); }
+        .logout-btn:hover { border-color: var(--text-muted); }
+
+        .welcome-card {
+            background: linear-gradient(135deg, var(--accent-soft), var(--surface) 70%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 26px clamp(20px, 4vw, 34px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .welcome-card h1 { margin: 0 0 6px; font-size: 21px; }
+        .welcome-card .biz-status { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+        .status-pill { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--success-soft); color: var(--success); }
+        .welcome-actions { display: flex; gap: 10px; }
+        .btn { border: none; border-radius: 9px; padding: 10px 18px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { filter: brightness(1.06); }
+        .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+        .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+        @media (max-width: 720px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+        .stat-card .stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+        .stat-card .stat-value { font-size: 24px; font-weight: 800; }
+        .stat-card .stat-value small { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .stat-card.accent-pending .stat-value { color: var(--pending); }
+        .stat-card.accent-approved .stat-value { color: var(--success); }
+
+        .section { margin-top: 32px; }
+        .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+        .section-head h2 { margin: 0; font-size: 16.5px; }
+        .section-head a { font-size: 13px; color: var(--accent); font-weight: 600; }
+
+        .activity-list { display: flex; flex-direction: column; gap: 12px; }
+        .activity-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .activity-main { flex: 1; min-width: 200px; }
+        .activity-main .a-title { font-size: 15.5px; font-weight: 700; margin-bottom: 4px; }
+        .activity-main .a-meta { font-size: 12.5px; color: var(--text-muted); display: flex; gap: 12px; flex-wrap: wrap; }
+        .status-tag { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle; }
+        .status-tag.active { background: var(--accent-soft); color: var(--accent); }
+        .status-tag.closed { background: #eceeee; color: #7f8c8d; }
+
+        .a-counts { display: flex; gap: 18px; }
+        .a-count { text-align: center; min-width: 54px; }
+        .a-count .n { font-size: 18px; font-weight: 800; }
+        .a-count .l { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .a-count.pending .n { color: var(--pending); }
+        .a-count.approved .n { color: var(--success); }
+
+        .a-actions { display: flex; gap: 8px; }
+        .a-actions a {
+            font-size: 12.5px; font-weight: 700; padding: 7px 12px; border-radius: 8px;
+            background: var(--ground); border: 1px solid var(--border); color: var(--text);
+        }
+        .a-actions a:hover { border-color: var(--accent); color: var(--accent); }
+        .a-actions a.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .a-actions a.primary:hover { filter: brightness(1.06); color: #fff; }
+
+        .empty-state { background: var(--surface); border: 1px dashed var(--border); border-radius: 14px; padding: 40px 20px; text-align: center; color: var(--text-muted); font-size: 13.5px; }
+        .empty-state a { color: var(--accent); font-weight: 700; }
+
+        footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
+    </style>
     <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
-    <h1 th:text="${vendor.businessName} + '님, 환영합니다'"></h1>
-    <p><a th:href="@{/vendor/activities}">내 활동 관리</a></p>
-    <p><a th:href="@{/vendor/profile}">업체 정보 관리</a></p>
-    <form th:action="@{/vendor/logout}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <button type="submit">로그아웃</button>
-    </form>
-    <th:block th:replace="~{fragments/layout :: js}"></th:block>
+<div class="wrap">
+
+    <div class="topbar">
+        <div class="brand">한강<span>웹</span></div>
+        <nav class="topnav">
+            <a th:href="@{/vendor/activities}">내 활동 관리</a>
+            <a th:href="@{/vendor/profile}">업체 정보 관리</a>
+            <form th:action="@{/vendor/logout}" method="post" style="margin:0;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="logout-btn">로그아웃</button>
+            </form>
+        </nav>
+    </div>
+
+    <div class="welcome-card">
+        <div>
+            <h1 th:text="${vendor.businessName} + '님, 안녕하세요'"></h1>
+            <div class="biz-status">
+                승인 상태 <span class="status-pill">승인됨</span>
+            </div>
+        </div>
+        <div class="welcome-actions">
+            <a class="btn btn-secondary" th:href="@{/vendor/profile}">업체 정보 관리</a>
+            <a class="btn btn-primary" th:href="@{/vendor/activities/new}">+ 새 활동 등록</a>
+        </div>
+    </div>
+
+    <div class="stat-row">
+        <div class="stat-card">
+            <div class="stat-label">등록한 활동</div>
+            <div class="stat-value"><span th:text="${totalActivities}"></span><small>개</small></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">전체 신청 인원</div>
+            <div class="stat-value"><span th:text="${totalApplicants}"></span><small>명</small></div>
+        </div>
+        <div class="stat-card accent-pending">
+            <div class="stat-label">승인 대기중</div>
+            <div class="stat-value"><span th:text="${totalPending}"></span><small>명</small></div>
+        </div>
+        <div class="stat-card accent-approved">
+            <div class="stat-label">승인 완료</div>
+            <div class="stat-value"><span th:text="${totalApproved}"></span><small>명</small></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <h2>내 활동</h2>
+            <a th:href="@{/vendor/activities}">전체보기 →</a>
+        </div>
+
+        <p th:if="${#lists.isEmpty(activityCards)}" class="empty-state">
+            등록된 활동이 없습니다. <a th:href="@{/vendor/activities/new}">첫 활동을 등록해보세요</a>
+        </p>
+
+        <div class="activity-list" th:unless="${#lists.isEmpty(activityCards)}">
+            <div class="activity-card" th:each="card : ${activityCards}">
+                <div class="activity-main">
+                    <span class="a-title">
+                        <span th:text="${card.activity.title}"></span>
+                        <span class="status-tag" th:classappend="${card.activity.status == 'ACTIVE'} ? 'active' : 'closed'"
+                              th:text="${card.activity.status == 'ACTIVE'} ? '모집중' : '마감'"></span>
+                    </span>
+                    <div class="a-meta">
+                        <span th:text="'📅 ' + ${card.activity.activityStartDate} + ' ~ ' + ${card.activity.activityEndDate}"></span>
+                        <span th:text="'💰 ' + ${#numbers.formatInteger(card.activity.price, 0, 'COMMA')} + '원'"></span>
+                        <span th:text="'👥 정원 ' + ${card.activity.dailyCapacity} + '명'"></span>
+                    </div>
+                </div>
+                <div class="a-counts">
+                    <div class="a-count pending"><div class="n" th:text="${card.pendingCount}"></div><div class="l">대기</div></div>
+                    <div class="a-count approved"><div class="n" th:text="${card.approvedCount}"></div><div class="l">승인</div></div>
+                </div>
+                <div class="a-actions">
+                    <a th:href="@{/vendor/activities/{id}/edit(id=${card.activity.activityId})}">수정</a>
+                    <a class="primary" th:href="@{/vendor/activities/{id}/participants(id=${card.activity.activityId})}">참여자 관리</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>한강웹</footer>
+
+</div>
+<th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>
