@@ -99,6 +99,7 @@
         .a-actions a {
             font-size: 12.5px; font-weight: 700; padding: 7px 12px; border-radius: 8px;
             background: var(--ground); border: 1px solid var(--border); color: var(--text);
+            text-decoration: none;
         }
         .a-actions a:hover { border-color: var(--accent); color: var(--accent); }
         .a-actions a.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
@@ -159,7 +160,6 @@
     <div class="section">
         <div class="section-head">
             <h2>내 활동</h2>
-            <a th:href="@{/vendor/activities}">전체보기 →</a>
         </div>
 
         <p th:if="${#lists.isEmpty(activityCards)}" class="empty-state">
