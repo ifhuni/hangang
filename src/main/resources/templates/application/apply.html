@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${activity.title} + ' 참여 신청 - 한강웹'"></title>
+    <title th:text="${activity.title} + ' 참여 신청 - 한강활동'"></title>
     <style>
         :root {
             --ground: #f6f7f9;
@@ -146,7 +146,7 @@
 <div class="wrap">
 
     <div class="topbar">
-        <div class="brand">한강<span>웹</span></div>
+        <div class="brand">한강<span>활동</span></div>
     </div>
 
     <a class="back-link" th:href="@{/activities/{id}(id=${activity.activityId})}">← 활동으로 돌아가기</a>
@@ -229,7 +229,7 @@
         </form>
     </div>
 
-    <footer>한강웹 · 신청 완료 후 조회 링크가 문자/이메일로 발송됩니다.</footer>
+    <footer>한강활동 · 신청 완료 후 조회 링크가 문자/이메일로 발송됩니다.</footer>
 
 </div>
 <th:block th:replace="~{fragments/layout :: js}"></th:block>

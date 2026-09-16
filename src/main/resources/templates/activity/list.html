@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>활동 목록 - 한강웹</title>
+    <title>활동 목록 - 한강활동</title>
     <style>
         :root {
             --ground: #f6f7f9;
@@ -29,7 +29,9 @@
         .topbar { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
         .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
         .brand span { color: var(--accent); }
-        .topnav { display: flex; gap: 20px; font-size: 14px; color: var(--text-muted); }
+        .topnav { display: flex; align-items: center; gap: 2px; font-size: 13.5px; }
+        .topnav a { color: var(--text-muted); font-weight: 600; padding: 7px 12px; border-radius: 8px; }
+        .topnav a:hover { background: var(--accent-soft); color: var(--accent); }
 
         .page-head { margin-top: 8px; margin-bottom: 18px; }
         .page-head h1 { margin: 0 0 4px; font-size: 22px; }
@@ -129,7 +131,7 @@
 <div class="wrap">
 
     <div class="topbar">
-        <div class="brand">한강<span>웹</span></div>
+        <div class="brand">한강<span>활동</span></div>
         <nav class="topnav">
             <a th:href="@{/}">홈</a>
             <a th:href="@{/apply/lookup}">내 신청 조회</a>
