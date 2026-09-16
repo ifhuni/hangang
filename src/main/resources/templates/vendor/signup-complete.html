@@ -3,12 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>가입 신청 완료 - 한강웹</title>
+    <style>
+        :root {
+            --ground: #f6f7f9;
+            --surface: #ffffff;
+            --border: #e3e6ea;
+            --text: #1f2a37;
+            --text-muted: #6b7684;
+            --accent: #2980b9;
+            --accent-soft: #eaf2fc;
+            --pending: #b7950b;
+            --pending-soft: #fbf3d9;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--ground);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+        a { color: inherit; text-decoration: none; }
+        .wrap { width: 100%; max-width: 400px; }
+
+        .brand { text-align: center; font-size: 21px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 24px; }
+        .brand span { color: var(--accent); }
+
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px 24px; text-align: center; }
+        .badge {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--pending-soft); color: var(--pending);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; margin: 0 auto 16px;
+        }
+        h1 { margin: 0 0 6px; font-size: 19px; }
+        .sub { margin: 0 0 20px; font-size: 13.5px; color: var(--text-muted); line-height: 1.6; }
+
+        .notice { background: var(--accent-soft); color: var(--accent); border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.6; text-align: left; margin-bottom: 24px; }
+
+        .btn { display: block; width: 100%; padding: 12px 0; border-radius: 10px; font-size: 14.5px; font-weight: 700; border: none; cursor: pointer; background: var(--accent); color: #fff; }
+        .btn:hover { filter: brightness(1.06); }
+
+        footer { margin-top: 24px; text-align: center; font-size: 12px; color: var(--text-muted); }
+    </style>
     <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
-    <h1>가입 신청이 접수되었습니다</h1>
-    <p>관리자 승인 후 이용하실 수 있습니다.</p>
-    <p><a href="/vendor/login">로그인 페이지로 이동</a></p>
-    <th:block th:replace="~{fragments/layout :: js}"></th:block>
+<div class="wrap">
+    <div class="brand">한강<span>웹</span></div>
+
+    <div class="card">
+        <div class="badge">⏳</div>
+        <h1>가입 신청이 접수되었습니다</h1>
+        <p class="sub">담당 관리자가 신청 내용을 확인하고 있습니다.</p>
+
+        <p class="notice">✅ 관리자 승인이 완료되면 등록하신 이메일로 로그인하여 활동을 등록하실 수 있습니다.</p>
+
+        <a class="btn" th:href="@{/vendor/login}">로그인 페이지로 이동</a>
+    </div>
+
+    <footer>한강웹</footer>
+</div>
+<th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>

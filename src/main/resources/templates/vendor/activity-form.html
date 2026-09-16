@@ -4,78 +4,172 @@
     <meta charset="UTF-8">
     <title th:text="${activityId} ? '활동 수정 - 한강웹' : '활동 등록 - 한강웹'"></title>
     <style>
-        body { font-family: sans-serif; max-width: 560px; margin: 60px auto; }
+        :root {
+            --ground: #f6f7f9;
+            --surface: #ffffff;
+            --border: #e3e6ea;
+            --text: #1f2a37;
+            --text-muted: #6b7684;
+            --accent: #2980b9;
+            --accent-soft: #eaf2fc;
+            --error: #c0392b;
+            --error-soft: #fbeceb;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--ground);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, Roboto, sans-serif;
+            padding: 0 16px 80px;
+        }
+        a { color: inherit; text-decoration: none; }
+        .wrap { max-width: 620px; margin: 0 auto; }
+
+        .topbar { padding-block: 20px; }
+        .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+        .brand span { color: var(--accent); }
+
+        .back-link { display: inline-block; margin-bottom: 14px; font-size: 13.5px; color: var(--text-muted); }
+        .back-link:hover { color: var(--accent); }
+
+        h1 { margin: 0 0 6px; font-size: 21px; }
+        .sub { margin: 0 0 20px; font-size: 13px; color: var(--text-muted); }
+
+        .banner { background: var(--error-soft); color: var(--error); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; margin-bottom: 16px; }
+
+        .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px clamp(18px, 4vw, 30px); }
+        .form-section + .form-section { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border); }
+        .form-section h2 { margin: 0 0 16px; font-size: 14px; }
+
         .field { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 4px; font-weight: bold; }
-        input, textarea { width: 100%; padding: 8px; box-sizing: border-box; }
-        textarea { height: 100px; }
-        .error { color: #c0392b; font-size: 13px; margin-top: 4px; }
-        .row { display: flex; gap: 16px; }
+        .field:last-child { margin-bottom: 0; }
+        .field label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--text); }
+        .field input, .field textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14.5px;
+            font-family: inherit;
+            color: var(--text);
+            background: var(--ground);
+        }
+        .field textarea { height: 96px; resize: vertical; }
+        .field input:focus, .field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+        .field-error { color: var(--error); font-size: 12.5px; margin-top: 5px; }
+        .field-hint { color: var(--text-muted); font-size: 12px; margin-top: 5px; }
+
+        .row { display: flex; gap: 14px; }
         .row .field { flex: 1; }
-        button { padding: 10px 20px; }
+        @media (max-width: 480px) { .row { flex-direction: column; gap: 0; } }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 24px;
+            border: none;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 15.5px;
+            font-weight: 700;
+            padding: 13px 0;
+            cursor: pointer;
+        }
+        .submit-btn:hover { filter: brightness(1.06); }
+
+        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
     </style>
     <th:block th:replace="~{fragments/layout :: css}"></th:block>
 </head>
 <body>
+<div class="wrap">
+
+    <div class="topbar">
+        <div class="brand">한강<span>웹</span></div>
+    </div>
+
+    <a class="back-link" th:href="@{/vendor/activities}">← 내 활동 관리</a>
+
     <h1 th:text="${activityId} ? '활동 수정' : '활동 등록'"></h1>
+    <p class="sub" th:text="${activityId} ? '수정 내용은 저장 즉시 반영됩니다.' : '등록하면 관리자 검수 없이 바로 노출됩니다.'"></p>
 
-    <p th:if="${errorMessage}" class="error" th:text="${errorMessage}"></p>
+    <p th:if="${errorMessage}" class="banner" th:text="${errorMessage}"></p>
 
-    <form th:action="${activityId} ? @{/vendor/activities/{id}(id=${activityId})} : @{/vendor/activities}"
-          th:object="${activityForm}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <div class="form-card">
+        <form th:action="${activityId} ? @{/vendor/activities/{id}(id=${activityId})} : @{/vendor/activities}"
+              th:object="${activityForm}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-        <div class="field">
-            <label>제목</label>
-            <input type="text" th:field="*{title}">
-            <div class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
-        </div>
-        <div class="field">
-            <label>설명</label>
-            <textarea th:field="*{description}"></textarea>
-        </div>
-        <div class="field">
-            <label>장소</label>
-            <input type="text" th:field="*{location}" placeholder="예: 뚝섬한강공원">
-            <div class="error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
-        </div>
-        <div class="field">
-            <label>금액(원)</label>
-            <input type="number" th:field="*{price}">
-            <div class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
-        </div>
-        <div class="row">
-            <div class="field">
-                <label>등록 시작일</label>
-                <input type="date" th:field="*{registrationStartDate}">
-                <div class="error" th:if="${#fields.hasErrors('registrationStartDate')}" th:errors="*{registrationStartDate}"></div>
-            </div>
-            <div class="field">
-                <label>등록 종료일</label>
-                <input type="date" th:field="*{registrationEndDate}">
-                <div class="error" th:if="${#fields.hasErrors('registrationEndDate')}" th:errors="*{registrationEndDate}"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="field">
-                <label>활동 시작일</label>
-                <input type="date" th:field="*{activityStartDate}">
-                <div class="error" th:if="${#fields.hasErrors('activityStartDate')}" th:errors="*{activityStartDate}"></div>
-            </div>
-            <div class="field">
-                <label>활동 종료일</label>
-                <input type="date" th:field="*{activityEndDate}">
-                <div class="error" th:if="${#fields.hasErrors('activityEndDate')}" th:errors="*{activityEndDate}"></div>
-            </div>
-        </div>
-        <div class="field">
-            <label>하루당 정원(명)</label>
-            <input type="number" th:field="*{dailyCapacity}">
-            <div class="error" th:if="${#fields.hasErrors('dailyCapacity')}" th:errors="*{dailyCapacity}"></div>
-        </div>
+            <div class="form-section">
+                <h2>기본 정보</h2>
 
-        <button type="submit" th:text="${activityId} ? '수정' : '등록'"></button>
-    </form>
-    <th:block th:replace="~{fragments/layout :: js}"></th:block>
+                <div class="field">
+                    <label for="title">제목</label>
+                    <input type="text" id="title" th:field="*{title}" placeholder="예: 한강 카약 밥투리">
+                    <div class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                </div>
+                <div class="field">
+                    <label for="description">설명</label>
+                    <textarea id="description" th:field="*{description}" placeholder="활동에 대한 소개를 적어주세요."></textarea>
+                </div>
+                <div class="field">
+                    <label for="location">장소</label>
+                    <input type="text" id="location" th:field="*{location}" placeholder="예: 뚝섬한강공원">
+                    <div class="field-error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
+                </div>
+                <div class="field">
+                    <label for="price">금액(원)</label>
+                    <input type="number" id="price" th:field="*{price}" placeholder="0">
+                    <div class="field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>등록 기간 <span style="font-weight:400; color:var(--text-muted);">— 참여 신청을 받는 기간</span></h2>
+                <div class="row">
+                    <div class="field">
+                        <label for="registrationStartDate">시작일</label>
+                        <input type="date" id="registrationStartDate" th:field="*{registrationStartDate}">
+                        <div class="field-error" th:if="${#fields.hasErrors('registrationStartDate')}" th:errors="*{registrationStartDate}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="registrationEndDate">종료일</label>
+                        <input type="date" id="registrationEndDate" th:field="*{registrationEndDate}">
+                        <div class="field-error" th:if="${#fields.hasErrors('registrationEndDate')}" th:errors="*{registrationEndDate}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>활동 기간 <span style="font-weight:400; color:var(--text-muted);">— 참여자가 실제로 참여하는 기간</span></h2>
+                <div class="row">
+                    <div class="field">
+                        <label for="activityStartDate">시작일</label>
+                        <input type="date" id="activityStartDate" th:field="*{activityStartDate}">
+                        <div class="field-error" th:if="${#fields.hasErrors('activityStartDate')}" th:errors="*{activityStartDate}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="activityEndDate">종료일</label>
+                        <input type="date" id="activityEndDate" th:field="*{activityEndDate}">
+                        <div class="field-error" th:if="${#fields.hasErrors('activityEndDate')}" th:errors="*{activityEndDate}"></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="dailyCapacity">하루당 정원(명)</label>
+                    <input type="number" id="dailyCapacity" th:field="*{dailyCapacity}" placeholder="0">
+                    <div class="field-error" th:if="${#fields.hasErrors('dailyCapacity')}" th:errors="*{dailyCapacity}"></div>
+                    <div class="field-hint">활동 기간 중 모든 날짜에 동일하게 적용됩니다.</div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" th:text="${activityId} ? '수정하기' : '등록하기'"></button>
+        </form>
+    </div>
+
+    <footer>한강웹</footer>
+
+</div>
+<th:block th:replace="~{fragments/layout :: js}"></th:block>
 </body>
 </html>
