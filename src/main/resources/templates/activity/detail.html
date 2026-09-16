@@ -76,13 +76,13 @@
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
         .calendar-dow { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); padding-bottom: 4px; }
         .calendar-cell {
-            aspect-ratio: 1;
+            aspect-ratio: 0.85;
             border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px;
+            gap: 4px;
             border: 1px solid transparent;
         }
         .calendar-cell.blank { visibility: hidden; }
@@ -91,8 +91,10 @@
         .calendar-cell.active:hover { border-color: var(--accent); }
         .calendar-cell.full { background: var(--warn-soft); color: var(--warn); }
         .calendar-cell.full:hover { border-color: var(--warn); }
-        .calendar-cell .cell-day { font-size: 13.5px; font-weight: 800; }
-        .calendar-cell .cell-note { font-size: 9px; font-weight: 700; }
+        .calendar-cell .cell-day { font-size: 17px; font-weight: 800; }
+        .calendar-cell .cell-note { font-size: 11px; font-weight: 700; }
+        .calendar-cell .cell-note .cell-total { font-weight: 500; opacity: .75; }
+        .calendar-cell, .calendar-cell a, .calendar-cell * { text-decoration: none; }
 
         footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
     </style>
@@ -167,7 +169,9 @@
                         <a th:href="@{/activities/{id}/apply(id=${activity.activityId}, date=${day.date})}"
                            style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; gap:2px;">
                             <span class="cell-day" th:text="${day.dayOfMonth}"></span>
-                            <span class="cell-note" th:text="${day.row.full} ? '마감' : ${day.row.remaining} + '석'"></span>
+                            <span class="cell-note">
+                                <span th:text="${day.row.approvedCount}"></span><span class="cell-total" th:text="'명/' + ${day.row.capacity} + '명'"></span>
+                            </span>
                         </a>
                     </th:block>
                     <th:block th:if="${!day.blank and !day.selectable}">

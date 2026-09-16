@@ -13,8 +13,6 @@ public interface ApplicationMapper {
 
     List<Application> findByActivityId(Long activityId);
 
-    List<ParticipationCount> countByActivity(Long activityId);
-
     int insertApplication(Application application);
 
     int approve(Long applicationId);

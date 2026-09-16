@@ -39,8 +39,8 @@ public class ActivityController {
         if (date != null) {
             remainingByActivityId = new HashMap<>();
             for (Activity activity : activities) {
-                int applied = applicationService.getAppliedCounts(activity.getActivityId()).getOrDefault(date, 0);
-                remainingByActivityId.put(activity.getActivityId(), activity.getDailyCapacity() - applied);
+                int approved = applicationService.getApprovedCounts(activity.getActivityId()).getOrDefault(date, 0);
+                remainingByActivityId.put(activity.getActivityId(), activity.getDailyCapacity() - approved);
             }
         }
 
@@ -56,11 +56,11 @@ public class ActivityController {
     @GetMapping("/activities/{activityId}")
     public String detail(@PathVariable Long activityId, Model model) {
         Activity activity = activityService.getActivity(activityId);
-        Map<LocalDate, Integer> appliedCounts = applicationService.getAppliedCounts(activityId);
+        Map<LocalDate, Integer> approvedCounts = applicationService.getApprovedCounts(activityId);
 
         Map<LocalDate, ActivityDateRow> rowsByDate = new HashMap<>();
         for (LocalDate date : datesBetween(activity.getActivityStartDate(), activity.getActivityEndDate())) {
-            rowsByDate.put(date, new ActivityDateRow(date, activity.getDailyCapacity(), appliedCounts.getOrDefault(date, 0)));
+            rowsByDate.put(date, new ActivityDateRow(date, activity.getDailyCapacity(), approvedCounts.getOrDefault(date, 0)));
         }
 
         model.addAttribute("activity", activity);

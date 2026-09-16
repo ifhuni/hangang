@@ -39,9 +39,10 @@ public class ApplicationService {
         return application.getToken();
     }
 
-    public Map<LocalDate, Integer> getAppliedCounts(Long activityId) {
-        return applicationMapper.countByActivity(activityId).stream()
-                .collect(Collectors.toMap(ParticipationCount::getParticipationDate, ParticipationCount::getCount));
+    public Map<LocalDate, Integer> getApprovedCounts(Long activityId) {
+        return applicationMapper.findByActivityId(activityId).stream()
+                .filter(a -> "APPROVED".equals(a.getStatus()))
+                .collect(Collectors.groupingBy(Application::getParticipationDate, Collectors.summingInt(a -> 1)));
     }
 
     public Application getByToken(String token) {

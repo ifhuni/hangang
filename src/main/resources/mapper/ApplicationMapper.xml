@@ -49,13 +49,6 @@
         WHERE application_id = #{applicationId} AND status = 'PENDING'
     </update>
 
-    <select id="countByActivity" parameterType="long" resultType="com.hangang.web.application.ParticipationCount">
-        SELECT participation_date, COUNT(*) AS count
-        FROM application
-        WHERE activity_id = #{activityId} AND status != 'CANCELLED'
-        GROUP BY participation_date
-    </select>
-
     <insert id="insertApplication" parameterType="com.hangang.web.application.Application"
             useGeneratedKeys="true" keyProperty="applicationId">
         INSERT INTO application (activity_id, applicant_name, phone, email, gender, participation_date, token)
