@@ -45,6 +45,10 @@ public class ApplicationService {
                 .collect(Collectors.groupingBy(Application::getParticipationDate, Collectors.summingInt(a -> 1)));
     }
 
+    public List<Application> searchApplications(String phone, String applicantName, String email) {
+        return applicationMapper.findByPhoneAndNameAndEmail(phone, applicantName, email);
+    }
+
     public Application getByToken(String token) {
         Application application = applicationMapper.findByToken(token);
         if (application == null) {

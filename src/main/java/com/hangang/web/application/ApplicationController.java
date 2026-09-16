@@ -1,6 +1,7 @@
 package com.hangang.web.application;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.validation.Valid;
 
@@ -69,6 +70,28 @@ public class ApplicationController {
     public String lookup(@PathVariable String token, Model model) {
         model.addAttribute("myApplication", applicationService.getByToken(token));
         return "application/lookup";
+    }
+
+    @GetMapping("/apply/lookup")
+    public String searchForm() {
+        return "application/lookup-search";
+    }
+
+    @PostMapping("/apply/lookup")
+    public String search(@RequestParam String phone, @RequestParam String applicantName,
+                          @RequestParam String email, Model model) {
+        List<Application> matches = applicationService.searchApplications(phone, applicantName, email);
+
+        if (matches.isEmpty()) {
+            model.addAttribute("errorMessage", "일치하는 신청 내역이 없습니다. 입력한 정보를 다시 확인해주세요.");
+            return "application/lookup-search";
+        }
+        if (matches.size() == 1) {
+            return "redirect:/apply/" + matches.get(0).getToken();
+        }
+
+        model.addAttribute("matches", matches);
+        return "application/lookup-results";
     }
 
     @PostMapping("/apply/{token}/cancel")

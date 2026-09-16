@@ -43,6 +43,15 @@
         ORDER BY p.participation_date, p.created_at
     </select>
 
+    <select id="findByPhoneAndNameAndEmail" resultMap="applicationResultMap">
+        SELECT p.application_id, p.activity_id, a.title AS activity_title, p.applicant_name, p.phone, p.email,
+               p.gender, p.participation_date, p.status, p.token, p.created_at, p.approved_at, p.cancelled_at
+        FROM application p
+        JOIN activity a ON a.activity_id = p.activity_id
+        WHERE p.phone = #{phone} AND p.applicant_name = #{applicantName} AND p.email = #{email}
+        ORDER BY p.created_at DESC
+    </select>
+
     <update id="approve" parameterType="long">
         UPDATE application
         SET status = 'APPROVED', approved_at = CURRENT_TIMESTAMP

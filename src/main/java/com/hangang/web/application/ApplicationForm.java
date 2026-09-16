@@ -2,6 +2,7 @@ package com.hangang.web.application;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +27,9 @@ public class ApplicationForm {
     @NotNull(message = "참여 희망 날짜를 선택해주세요.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate participationDate;
+
+    @AssertTrue(message = "개인정보 수집·이용에 동의해주세요.")
+    private boolean privacyAgreed;
 
     public String getApplicantName() {
         return applicantName;
@@ -65,5 +69,13 @@ public class ApplicationForm {
 
     public void setParticipationDate(LocalDate participationDate) {
         this.participationDate = participationDate;
+    }
+
+    public boolean isPrivacyAgreed() {
+        return privacyAgreed;
+    }
+
+    public void setPrivacyAgreed(boolean privacyAgreed) {
+        this.privacyAgreed = privacyAgreed;
     }
 }

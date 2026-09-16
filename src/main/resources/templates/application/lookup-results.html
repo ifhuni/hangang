@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 신청 조회 - 한강웹</title>
+    <style>
+        :root {
+            --ground: #f6f7f9;
+            --surface: #ffffff;
+            --border: #e3e6ea;
+            --text: #1f2a37;
+            --text-muted: #6b7684;
+            --accent: #2980b9;
+            --pending: #b7950b;
+            --pending-soft: #fbf3d9;
+            --approved: #1e8449;
+            --approved-soft: #e9f7ef;
+            --cancelled: #7f8c8d;
+            --cancelled-soft: #eceeee;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--ground);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, Roboto, sans-serif;
+            padding: 24px 16px 80px;
+        }
+        a { color: inherit; text-decoration: none; }
+        .wrap { width: 100%; max-width: 480px; margin: 0 auto; }
+
+        .brand { text-align: center; font-size: 21px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 24px; }
+        .brand span { color: var(--accent); }
+
+        h1 { margin: 0 0 4px; font-size: 19px; text-align: center; }
+        .sub { margin: 0 0 22px; font-size: 13px; color: var(--text-muted); text-align: center; }
+
+        .result-list { display: flex; flex-direction: column; gap: 10px; }
+        .result-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+            padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        }
+        .result-card:hover { border-color: var(--accent); }
+        .result-card .title { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
+        .result-card .date { font-size: 12.5px; color: var(--text-muted); }
+        .status { flex: none; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+        .status-PENDING { background: var(--pending-soft); color: var(--pending); }
+        .status-APPROVED { background: var(--approved-soft); color: var(--approved); }
+        .status-CANCELLED { background: var(--cancelled-soft); color: var(--cancelled); }
+
+        .home-link { text-align: center; margin-top: 20px; font-size: 13.5px; color: var(--text-muted); }
+        .home-link a { color: var(--accent); font-weight: 700; }
+        .home-link a:hover { text-decoration: underline; }
+    </style>
+    <th:block th:replace="~{fragments/layout :: css}"></th:block>
+</head>
+<body>
+<div class="wrap">
+    <div class="brand">한강<span>웹</span></div>
+
+    <h1>내 신청 조회</h1>
+    <p class="sub" th:text="${#lists.size(matches)} + '건의 신청 내역을 찾았습니다. 확인할 신청을 선택하세요.'"></p>
+
+    <div class="result-list">
+        <a class="result-card" th:each="app : ${matches}" th:href="@{/apply/{token}(token=${app.token})}">
+            <div>
+                <div class="title" th:text="${app.activityTitle}"></div>
+                <div class="date" th:text="'참여일 ' + ${app.participationDate}"></div>
+            </div>
+            <span th:class="'status status-' + ${app.status}"
+                  th:text="${app.status == 'PENDING'} ? '대기중' : (${app.status == 'APPROVED'} ? '승인됨' : '취소됨')"></span>
+        </a>
+    </div>
+
+    <p class="home-link"><a th:href="@{/apply/lookup}">다시 조회하기</a></p>
+</div>
+<th:block th:replace="~{fragments/layout :: js}"></th:block>
+</body>
+</html>

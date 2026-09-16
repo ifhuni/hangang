@@ -102,6 +102,28 @@
         .radio-option input { position: absolute; opacity: 0; }
         .radio-option:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 700; }
 
+        .locked-date {
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
+            background: var(--ground); font-size: 14.5px; font-weight: 600;
+        }
+        .locked-date a { font-size: 12.5px; font-weight: 700; color: var(--accent); }
+        .locked-date a:hover { text-decoration: underline; }
+
+        .privacy-box {
+            background: var(--ground);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+        .consent-field { display: flex; align-items: flex-start; gap: 9px; }
+        .consent-field input { width: auto; margin-top: 2px; accent-color: var(--accent); }
+        .consent-field label { margin: 0; font-size: 13.5px; font-weight: 600; color: var(--text); }
+
         .submit-btn {
             width: 100%;
             margin-top: 24px;
@@ -176,11 +198,31 @@
                 </div>
                 <div class="field-error" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
             </div>
-            <div class="field">
+            <div class="field" th:if="${applicationForm.participationDate != null}">
+                <label>참여 희망 날짜</label>
+                <div class="locked-date">
+                    <span th:text="${applicationForm.participationDate}"></span>
+                    <a th:href="@{/activities/{id}(id=${activity.activityId})}">날짜 변경</a>
+                </div>
+                <input type="hidden" th:field="*{participationDate}">
+            </div>
+            <div class="field" th:if="${applicationForm.participationDate == null}">
                 <label for="participationDate">참여 희망 날짜</label>
                 <input type="date" id="participationDate" th:field="*{participationDate}"
                        th:min="${activity.activityStartDate}" th:max="${activity.activityEndDate}">
                 <div class="field-error" th:if="${#fields.hasErrors('participationDate')}" th:errors="*{participationDate}"></div>
+            </div>
+
+            <div class="field">
+                <p class="privacy-box">
+                    <strong>개인정보 수집·이용 안내</strong><br>
+                    수집 항목: 이름, 연락처, 이메일, 성별 · 수집 목적: 참여 신청 확인 및 안내 · 보유 기간: 신청일로부터 1년
+                </p>
+                <div class="consent-field">
+                    <input type="checkbox" id="privacyAgreed" th:field="*{privacyAgreed}">
+                    <label for="privacyAgreed">개인정보 수집·이용에 동의합니다 (필수)</label>
+                </div>
+                <div class="field-error" th:if="${#fields.hasErrors('privacyAgreed')}" th:errors="*{privacyAgreed}"></div>
             </div>
 
             <button type="submit" class="submit-btn">신청하기</button>
