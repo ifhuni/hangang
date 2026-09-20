@@ -7,9 +7,9 @@ spring:
     init:
       mode: always
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: hangang
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:hangang}
     driver-class-name: org.postgresql.Driver
 
 mybatis:
