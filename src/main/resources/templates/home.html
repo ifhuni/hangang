@@ -135,8 +135,38 @@
         .event-card .title { font-size: 14px; font-weight: 600; margin: 0 0 2px; }
         .event-card .desc { margin: 0; font-size: 12.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        .modal-meta { font-size: 12.5px; color: var(--text-muted); margin: 0 0 12px; }
-        .modal-body-text { white-space: pre-wrap; font-size: 14.5px; line-height: 1.6; margin: 0; }
+        .modal-backdrop.show { opacity: .45; }
+        .detail-modal .modal-content {
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--surface);
+            color: var(--text);
+            box-shadow: 0 24px 60px -20px rgba(31,42,55,.35);
+            overflow: hidden;
+        }
+        .detail-modal .modal-dialog { max-width: 520px; }
+        .detail-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px 0;
+        }
+        .detail-close {
+            all: unset; cursor: pointer; width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; line-height: 1; color: var(--text-muted);
+        }
+        .detail-close:hover { background: var(--ground); color: var(--text); }
+        .detail-body { padding: 10px 24px 8px; }
+        .detail-body h2 { margin: 6px 0 8px; font-size: 20px; line-height: 1.35; font-weight: 800; text-wrap: balance; }
+        .modal-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--text-muted); margin: 0 0 16px; padding-bottom: 16px; border-bottom: 1px dashed var(--border); }
+        .modal-body-text { white-space: pre-wrap; font-size: 14.5px; line-height: 1.75; margin: 0; max-height: 46vh; overflow-y: auto; }
+        .detail-foot { padding: 16px 24px 22px; }
+        .detail-foot button {
+            all: unset; box-sizing: border-box; cursor: pointer; width: 100%; text-align: center;
+            background: var(--accent); color: #fff; font-size: 14px; font-weight: 700;
+            padding: 11px 0; border-radius: 10px;
+        }
+        .detail-foot button:hover { filter: brightness(1.06); }
+        .tag.event-tag { background: var(--tag-event); }
 
         footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
     </style>
@@ -228,32 +258,43 @@
 </div>
 
 <!-- 공지사항 상세 모달 -->
-<div class="modal fade" th:each="notice : ${notices}" th:id="'noticeModal' + ${notice.noticeId}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade detail-modal" th:each="notice : ${notices}" th:id="'noticeModal' + ${notice.noticeId}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" th:text="${notice.title}"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="detail-head">
+                <span class="tag" th:text="${notice.pinned} ? '고정' : '공지'"></span>
+                <button type="button" class="detail-close" data-bs-dismiss="modal" aria-label="닫기">&times;</button>
             </div>
-            <div class="modal-body">
-                <p class="modal-meta" th:text="${notice.publishDate}"></p>
+            <div class="detail-body">
+                <h2 th:text="${notice.title}"></h2>
+                <p class="modal-meta"><span th:text="'📅 ' + ${notice.publishDate}"></span></p>
                 <p class="modal-body-text" th:text="${notice.content}"></p>
+            </div>
+            <div class="detail-foot">
+                <button type="button" data-bs-dismiss="modal">확인</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- 이벤트 상세 모달 -->
-<div class="modal fade" th:each="event : ${events}" th:id="'eventModal' + ${event.eventId}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade detail-modal" th:each="event : ${events}" th:id="'eventModal' + ${event.eventId}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" th:text="${event.title}"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="detail-head">
+                <span class="tag event-tag">이벤트</span>
+                <button type="button" class="detail-close" data-bs-dismiss="modal" aria-label="닫기">&times;</button>
             </div>
-            <div class="modal-body">
-                <p class="modal-meta" th:text="${event.eventDate} + ${event.location != null and !event.location.isEmpty() ? ' · ' + event.location : ''}"></p>
+            <div class="detail-body">
+                <h2 th:text="${event.title}"></h2>
+                <p class="modal-meta">
+                    <span th:text="'📅 ' + ${event.eventDate}"></span>
+                    <span th:if="${event.location != null and !event.location.isEmpty()}" th:text="'📍 ' + ${event.location}"></span>
+                </p>
                 <p class="modal-body-text" th:text="${event.description}"></p>
+            </div>
+            <div class="detail-foot">
+                <button type="button" data-bs-dismiss="modal">확인</button>
             </div>
         </div>
     </div>
