@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS activity (
     title                    VARCHAR(200) NOT NULL,
     description              TEXT,
     location                 VARCHAR(200),
+    image_path               VARCHAR(500),
     price                    INTEGER      NOT NULL,
     registration_start_date  DATE         NOT NULL, -- 신청 등록 기간 시작
     registration_end_date    DATE         NOT NULL, -- 신청 등록 기간 종료
@@ -41,6 +42,9 @@ CREATE TABLE IF NOT EXISTS activity (
     created_at               TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at               TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 기존에 생성된 activity 테이블에도 안전하게 컬럼을 추가한다 (신규 설치 시에는 위 CREATE TABLE에서 이미 포함됨).
+ALTER TABLE activity ADD COLUMN IF NOT EXISTS image_path VARCHAR(500);
 
 -- 참여 신청 (비회원). 정원 초과분은 별도 상태 없이 status='PENDING'인 채로 대기열을 구성하며,
 -- 업체가 날짜별 정원 내에서 원하는 신청자를 선택해 'APPROVED'로 변경한다.

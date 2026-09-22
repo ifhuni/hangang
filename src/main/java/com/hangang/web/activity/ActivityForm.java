@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 public class ActivityForm {
 
@@ -14,6 +15,8 @@ public class ActivityForm {
     private String title;
 
     private String description;
+
+    private MultipartFile image;
 
     @NotBlank(message = "장소를 입력해주세요.")
     private String location;
@@ -56,6 +59,14 @@ public class ActivityForm {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public MultipartFile getImage() {
+        return image;
+    }
+
+    public void setImage(MultipartFile image) {
+        this.image = image;
     }
 
     public String getLocation() {

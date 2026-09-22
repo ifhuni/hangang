@@ -117,6 +117,7 @@
             transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
         }
         .card:hover { border-color: var(--accent); box-shadow: 0 8px 20px -8px rgba(41,128,185,.35); transform: translateY(-2px); }
+        .card-thumb { aspect-ratio: 16/10; object-fit: cover; border-radius: 10px 10px 0 0; margin: -16px -16px 0; width: calc(100% + 32px); }
         .card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
         .vendor { font-size: 12px; color: var(--text-muted); font-weight: 600; }
         .badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); flex: none; }
@@ -202,6 +203,7 @@
     <div class="cards" th:unless="${#lists.isEmpty(activities)}">
         <a class="card" th:each="activity : ${activities}" th:href="@{/activities/{id}(id=${activity.activityId})}"
            th:with="remaining=${remainingByActivityId != null} ? ${remainingByActivityId.get(activity.activityId)} : null">
+            <img th:if="${activity.imagePath != null}" th:src="@{${activity.imagePath}}" class="card-thumb" alt="">
             <div class="card-top">
                 <span class="vendor" th:text="${activity.vendorBusinessName}"></span>
                 <span class="badge" th:classappend="${remaining != null and remaining <= 3} ? 'spots-low' : ''"

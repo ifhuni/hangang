@@ -11,6 +11,7 @@ public class Activity {
     private String title;
     private String description;
     private String location;
+    private String imagePath;
     private Integer price;
     private LocalDate registrationStartDate;
     private LocalDate registrationEndDate;
@@ -67,6 +68,14 @@ public class Activity {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public Integer getPrice() {

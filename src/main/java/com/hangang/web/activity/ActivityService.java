@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 public class ActivityService {
 
     private final ActivityMapper activityMapper;
+    private final ActivityImageStorage imageStorage;
 
-    public ActivityService(ActivityMapper activityMapper) {
+    public ActivityService(ActivityMapper activityMapper, ActivityImageStorage imageStorage) {
         this.activityMapper = activityMapper;
+        this.imageStorage = imageStorage;
     }
 
     public List<Activity> listPublicActivities(String keyword, LocalDate date, Integer headcount, String sort) {
@@ -44,18 +46,28 @@ public class ActivityService {
         Activity activity = new Activity();
         activity.setVendorId(vendorId);
         applyForm(activity, form);
+        if (form.getImage() != null && !form.getImage().isEmpty()) {
+            activity.setImagePath(imageStorage.save(form.getImage()));
+        }
 
         activityMapper.insertActivity(activity);
     }
 
     public void updateActivity(Long vendorId, Long activityId, ActivityForm form) {
         validateDates(form);
-        getVendorActivity(vendorId, activityId);
+        Activity existing = getVendorActivity(vendorId, activityId);
 
         Activity activity = new Activity();
         activity.setActivityId(activityId);
         activity.setVendorId(vendorId);
         applyForm(activity, form);
+
+        if (form.getImage() != null && !form.getImage().isEmpty()) {
+            activity.setImagePath(imageStorage.save(form.getImage()));
+            imageStorage.delete(existing.getImagePath());
+        } else {
+            activity.setImagePath(existing.getImagePath());
+        }
 
         activityMapper.updateActivity(activity);
     }

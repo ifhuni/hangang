@@ -60,6 +60,9 @@
         .field-error { color: var(--error); font-size: 12.5px; margin-top: 5px; }
         .field-hint { color: var(--text-muted); font-size: 12px; margin-top: 5px; }
 
+        .image-preview { display: block; max-width: 220px; max-height: 160px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; object-fit: cover; }
+        .field input[type="file"] { border: 1px dashed var(--border); background: var(--surface); padding: 10px 12px; cursor: pointer; }
+
         .row { display: flex; gap: 14px; }
         .row .field { flex: 1; }
         @media (max-width: 480px) { .row { flex-direction: column; gap: 0; } }
@@ -98,7 +101,7 @@
 
     <div class="form-card">
         <form th:action="${activityId} ? @{/vendor/activities/{id}(id=${activityId})} : @{/vendor/activities}"
-              th:object="${activityForm}" method="post">
+              th:object="${activityForm}" method="post" enctype="multipart/form-data">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
             <div class="form-section">
@@ -117,6 +120,12 @@
                     <label for="location">장소</label>
                     <input type="text" id="location" th:field="*{location}" placeholder="예: 뚝섬한강공원">
                     <div class="field-error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
+                </div>
+                <div class="field">
+                    <label for="image">사진</label>
+                    <img th:if="${currentImagePath != null}" th:src="@{${currentImagePath}}" class="image-preview" alt="현재 등록된 사진">
+                    <input type="file" id="image" th:field="*{image}" accept="image/*">
+                    <div class="field-hint" th:text="${currentImagePath != null} ? '새 파일을 선택하면 기존 사진이 교체됩니다.' : '활동을 소개하는 사진을 첨부할 수 있습니다. (선택, 5MB 이하)'"></div>
                 </div>
                 <div class="field">
                     <label for="price">금액(원)</label>

@@ -74,6 +74,7 @@ public class VendorActivityController {
 
         model.addAttribute("activityForm", form);
         model.addAttribute("activityId", activityId);
+        model.addAttribute("currentImagePath", activity.getImagePath());
         return "vendor/activity-form";
     }
 
