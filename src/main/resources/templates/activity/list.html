@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>활동 목록 - 한강활동</title>
+    <title th:text="#{activityList.title} + ' - ' + #{common.footer.brand}">활동 목록 - 한강활동</title>
     <style>
         :root {
             --ground: #f6f7f9;
@@ -28,10 +28,15 @@
 
         .topbar { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
         .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
-        .brand span { color: var(--accent); }
+        .brand span:last-child { color: var(--accent); margin-left: 2px; }
         .topnav { display: flex; align-items: center; gap: 2px; font-size: 13.5px; }
         .topnav a { color: var(--text-muted); font-weight: 600; padding: 7px 12px; border-radius: 8px; }
         .topnav a:hover { background: var(--accent-soft); color: var(--accent); }
+        .lang-switch { display: flex; align-items: center; gap: 6px; margin-left: 10px; padding-left: 12px; border-left: 1px solid var(--border); }
+        .lang-btn { all: unset; cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+        .lang-btn.active { color: var(--accent); font-weight: 800; }
+        .lang-btn:hover { color: var(--accent); }
+        .lang-sep { font-size: 11px; color: var(--border); }
 
         .page-head { margin-top: 8px; margin-bottom: 18px; }
         .page-head h1 { margin: 0 0 4px; font-size: 22px; }
@@ -131,67 +136,68 @@
 <div class="wrap">
 
     <div class="topbar">
-        <div class="brand">한강<span>활동</span></div>
+        <div class="brand"><span th:text="#{common.brand.prefix}">한강</span><span th:text="#{common.brand.suffix}">활동</span></div>
         <nav class="topnav">
-            <a th:href="@{/}">홈</a>
-            <a th:href="@{/apply/lookup}">내 신청 조회</a>
-            <a th:href="@{/vendor/login}">업체 로그인</a>
+            <a th:href="@{/}" th:text="#{common.nav.home}">홈</a>
+            <a th:href="@{/apply/lookup}" th:text="#{common.nav.myApplications}">내 신청 조회</a>
+            <a th:href="@{/vendor/login}" th:text="#{common.nav.vendorLogin}">업체 로그인</a>
+            <th:block th:replace="~{fragments/layout :: langSwitcher}"></th:block>
         </nav>
     </div>
 
     <div class="page-head">
-        <h1>활동 목록</h1>
-        <p>한강에서 즐길 수 있는 다양한 체험 활동을 찾아보세요.</p>
+        <h1 th:text="#{activityList.heading}">활동 목록</h1>
+        <p th:text="#{activityList.subheading}">한강에서 즐길 수 있는 다양한 체험 활동을 찾아보세요.</p>
     </div>
 
     <form class="filter-bar" th:action="@{/activities}" method="get">
         <div class="field">
-            <label for="date">참여 날짜</label>
+            <label for="date" th:text="#{activityList.filter.date}">참여 날짜</label>
             <input type="date" id="date" name="date" th:value="${date}">
         </div>
         <div class="field">
-            <label for="headcount">인원수</label>
+            <label for="headcount" th:text="#{activityList.filter.headcount}">인원수</label>
             <input type="number" id="headcount" name="headcount" min="1" th:value="${headcount}">
         </div>
         <div class="field">
-            <label for="keyword">활동명</label>
-            <input type="text" id="keyword" name="keyword" placeholder="예: 카약, 클라이밍" th:value="${keyword}">
+            <label for="keyword" th:text="#{activityList.filter.keyword}">활동명</label>
+            <input type="text" id="keyword" name="keyword" th:placeholder="#{activityList.filter.keyword.placeholder}" th:value="${keyword}">
         </div>
-        <button type="submit">검색</button>
+        <button type="submit" th:text="#{activityList.filter.submit}">검색</button>
     </form>
 
     <div class="active-filters" th:if="${date != null or headcount != null or (keyword != null and !keyword.isEmpty())}">
         <span class="chip" th:if="${date != null}">
-            <span th:text="${date} + ' 참여'"></span>
-            <a th:href="@{/activities(headcount=${headcount}, keyword=${keyword})}" aria-label="날짜 조건 제거">×</a>
+            <span th:text="#{activityList.chip.dateSuffix(${date})}"></span>
+            <a th:href="@{/activities(headcount=${headcount}, keyword=${keyword})}" th:aria-label="#{activityList.chip.removeDate}">×</a>
         </span>
         <span class="chip" th:if="${headcount != null}">
-            <span th:text="${headcount} + '명'"></span>
-            <a th:href="@{/activities(date=${date}, keyword=${keyword})}" aria-label="인원 조건 제거">×</a>
+            <span th:text="#{activityList.chip.headcountSuffix(${headcount})}"></span>
+            <a th:href="@{/activities(date=${date}, keyword=${keyword})}" th:aria-label="#{activityList.chip.removeHeadcount}">×</a>
         </span>
         <span class="chip" th:if="${keyword != null and !keyword.isEmpty()}">
             <span th:text="'&quot;' + ${keyword} + '&quot;'"></span>
-            <a th:href="@{/activities(date=${date}, headcount=${headcount})}" aria-label="검색어 조건 제거">×</a>
+            <a th:href="@{/activities(date=${date}, headcount=${headcount})}" th:aria-label="#{activityList.chip.removeKeyword}">×</a>
         </span>
     </div>
 
     <div class="result-row">
-        <div class="result-count">검색 결과 <span th:text="${#lists.size(activities)} + '건'"></span></div>
+        <div class="result-count" th:text="#{activityList.resultCount(${#lists.size(activities)})}">검색 결과 0건</div>
         <form class="sort" th:action="@{/activities}" method="get">
             <input type="hidden" name="date" th:if="${date != null}" th:value="${date}">
             <input type="hidden" name="headcount" th:if="${headcount != null}" th:value="${headcount}">
             <input type="hidden" name="keyword" th:if="${keyword != null}" th:value="${keyword}">
-            정렬
+            <span th:text="#{activityList.sort.label}">정렬</span>
             <select name="sort" onchange="this.form.submit()">
-                <option value="latest" th:selected="${sort == null or sort == 'latest'}">최신 등록순</option>
-                <option value="soon" th:selected="${sort == 'soon'}">참여일 임박순</option>
-                <option value="price_asc" th:selected="${sort == 'price_asc'}">가격 낮은순</option>
-                <option value="price_desc" th:selected="${sort == 'price_desc'}">가격 높은순</option>
+                <option value="latest" th:selected="${sort == null or sort == 'latest'}" th:text="#{activityList.sort.latest}">최신 등록순</option>
+                <option value="soon" th:selected="${sort == 'soon'}" th:text="#{activityList.sort.soon}">참여일 임박순</option>
+                <option value="price_asc" th:selected="${sort == 'price_asc'}" th:text="#{activityList.sort.priceAsc}">가격 낮은순</option>
+                <option value="price_desc" th:selected="${sort == 'price_desc'}" th:text="#{activityList.sort.priceDesc}">가격 높은순</option>
             </select>
         </form>
     </div>
 
-    <p th:if="${#lists.isEmpty(activities)}" class="empty">조건에 맞는 활동이 없습니다. 날짜나 인원수를 조정해보세요.</p>
+    <p th:if="${#lists.isEmpty(activities)}" class="empty" th:text="#{activityList.empty}">조건에 맞는 활동이 없습니다. 날짜나 인원수를 조정해보세요.</p>
 
     <div class="cards" th:unless="${#lists.isEmpty(activities)}">
         <a class="card" th:each="activity : ${activities}" th:href="@{/activities/{id}(id=${activity.activityId})}"
@@ -199,20 +205,20 @@
             <div class="card-top">
                 <span class="vendor" th:text="${activity.vendorBusinessName}"></span>
                 <span class="badge" th:classappend="${remaining != null and remaining <= 3} ? 'spots-low' : ''"
-                      th:text="${remaining == null} ? '모집중' : (${remaining <= 0} ? '마감 임박' : '잔여 ' + ${remaining} + '자리')"></span>
+                      th:text="${remaining == null} ? #{activityList.badge.open} : (${remaining <= 0} ? #{activityList.badge.full} : #{activityList.badge.remaining(${remaining})})"></span>
             </div>
             <h3 th:text="${activity.title}"></h3>
             <div class="meta-row">
                 <span th:text="'📅 ' + ${activity.activityStartDate} + ' – ' + ${activity.activityEndDate}"></span>
-                <span th:text="'👥 정원 ' + ${activity.dailyCapacity} + '명'"></span>
+                <span th:text="'👥 ' + #{activityList.card.capacity(${activity.dailyCapacity})}"></span>
                 <span th:if="${activity.location != null and !activity.location.isEmpty()}" th:text="'📍 ' + ${activity.location}"></span>
             </div>
             <div class="card-foot">
                 <div class="price">
-                    <span th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + '원'"></span>
-                    <small>&nbsp;/ 1인</small>
+                    <span th:text="${#numbers.formatInteger(activity.price, 0, 'COMMA')} + ' ' + #{common.currency.krw}"></span>
+                    <small th:text="'&nbsp;' + #{activityList.card.perPerson}">&nbsp;/ 1인</small>
                 </div>
-                <span class="view-link">자세히 보기 →</span>
+                <span class="view-link" th:text="#{activityList.card.viewMore}">자세히 보기 →</span>
             </div>
         </a>
     </div>

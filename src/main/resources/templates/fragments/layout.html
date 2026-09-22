@@ -6,8 +6,25 @@
     </th:block>
 </head>
 <body>
+    <div class="lang-switch" th:fragment="langSwitcher">
+        <button type="button" class="lang-btn" data-lang="ko"
+                th:classappend="${#locale.language == 'ko'} ? ' active'" th:text="#{common.lang.ko}"></button>
+        <span class="lang-sep">/</span>
+        <button type="button" class="lang-btn" data-lang="en"
+                th:classappend="${#locale.language == 'en'} ? ' active'" th:text="#{common.lang.en}"></button>
+    </div>
+
     <th:block th:fragment="js">
         <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+        <script>
+            document.querySelectorAll('.lang-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var url = new URL(window.location.href);
+                    url.searchParams.set('lang', btn.getAttribute('data-lang'));
+                    window.location.href = url.toString();
+                });
+            });
+        </script>
     </th:block>
 </body>
 </html>

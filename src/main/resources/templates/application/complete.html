@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>신청 완료 - 한강활동</title>
+    <title th:text="#{application.complete.heading} + ' - ' + #{common.footer.brand}">신청 완료 - 한강활동</title>
     <style>
         :root {
             --ground: #f6f7f9;
@@ -26,9 +26,14 @@
         a { color: inherit; text-decoration: none; }
         .wrap { max-width: 480px; margin: 0 auto; }
 
-        .topbar { padding-block: 20px; }
+        .topbar { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
         .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
-        .brand span { color: var(--accent); }
+        .brand span:last-child { color: var(--accent); margin-left: 2px; }
+        .lang-switch { display: flex; align-items: center; gap: 6px; }
+        .lang-btn { all: unset; cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+        .lang-btn.active { color: var(--accent); font-weight: 800; }
+        .lang-btn:hover { color: var(--accent); }
+        .lang-sep { font-size: 11px; color: var(--border); }
 
         .card {
             background: var(--surface);
@@ -84,28 +89,29 @@
 <div class="wrap">
 
     <div class="topbar">
-        <div class="brand">한강<span>활동</span></div>
+        <div class="brand"><span th:text="#{common.brand.prefix}">한강</span><span th:text="#{common.brand.suffix}">활동</span></div>
+        <th:block th:replace="~{fragments/layout :: langSwitcher}"></th:block>
     </div>
 
     <div class="card">
         <div class="check-badge">✓</div>
-        <h1>신청이 접수되었습니다</h1>
-        <p class="sub">업체 확인 후 참여 여부가 결정됩니다.</p>
+        <h1 th:text="#{application.complete.heading}">신청이 접수되었습니다</h1>
+        <p class="sub" th:text="#{application.complete.subheading}">업체 확인 후 참여 여부가 결정됩니다.</p>
 
         <div class="summary">
             <div class="title" th:text="${myApplication.activityTitle}"></div>
-            <div class="date" th:text="'참여일 ' + ${myApplication.participationDate}"></div>
+            <div class="date" th:text="#{application.complete.dateLabel} + ' ' + ${myApplication.participationDate}"></div>
         </div>
 
-        <p class="notice">📩 문자/이메일로 조회 링크를 보내드립니다. 해당 링크로 언제든 신청 상태를 확인하고 취소할 수 있습니다.</p>
+        <p class="notice" th:text="#{application.complete.notice}">📩 문자/이메일로 조회 링크를 보내드립니다. 해당 링크로 언제든 신청 상태를 확인하고 취소할 수 있습니다.</p>
 
         <div class="actions">
-            <a class="btn btn-primary" th:href="@{/apply/{token}(token=${myApplication.token})}">지금 조회하기</a>
-            <a class="btn btn-secondary" th:href="@{/activities}">활동 목록으로</a>
+            <a class="btn btn-primary" th:href="@{/apply/{token}(token=${myApplication.token})}" th:text="#{application.complete.viewNow}">지금 조회하기</a>
+            <a class="btn btn-secondary" th:href="@{/activities}" th:text="#{application.complete.backToList}">활동 목록으로</a>
         </div>
     </div>
 
-    <footer>한강활동</footer>
+    <footer th:text="#{common.footer.brand}">한강활동</footer>
 
 </div>
 <th:block th:replace="~{fragments/layout :: js}"></th:block>

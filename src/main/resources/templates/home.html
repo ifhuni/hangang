@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>한강활동</title>
+    <title th:text="#{home.title}">한강활동</title>
     <style>
         :root {
             --ground: #f6f7f9;
@@ -33,10 +33,15 @@
             padding-block: 20px;
         }
         .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
-        .brand span { color: var(--accent); }
+        .brand span:last-child { color: var(--accent); margin-left: 2px; }
         .topnav { display: flex; align-items: center; gap: 2px; font-size: 13.5px; }
         .topnav a { text-decoration: none; color: var(--text-muted); font-weight: 600; padding: 7px 12px; border-radius: 8px; }
         .topnav a:hover { background: var(--accent-soft); color: var(--accent); }
+        .lang-switch { display: flex; align-items: center; gap: 6px; margin-left: 10px; padding-left: 12px; border-left: 1px solid var(--border); }
+        .lang-btn { all: unset; cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+        .lang-btn.active { color: var(--accent); font-weight: 800; }
+        .lang-btn:hover { color: var(--accent); }
+        .lang-sep { font-size: 11px; color: var(--border); }
 
         .hero {
             background: linear-gradient(180deg, var(--accent-soft), var(--surface) 78%);
@@ -176,34 +181,35 @@
 <div class="wrap">
 
     <div class="topbar">
-        <div class="brand">한강<span>활동</span></div>
+        <div class="brand"><span th:text="#{common.brand.prefix}">한강</span><span th:text="#{common.brand.suffix}">활동</span></div>
         <nav class="topnav">
-            <a th:href="@{/activities}">활동 목록</a>
-            <a th:href="@{/apply/lookup}">내 신청 조회</a>
-            <a th:href="@{/vendor/login}">업체 로그인</a>
+            <a th:href="@{/activities}" th:text="#{common.nav.activities}">활동 목록</a>
+            <a th:href="@{/apply/lookup}" th:text="#{common.nav.myApplications}">내 신청 조회</a>
+            <a th:href="@{/vendor/login}" th:text="#{common.nav.vendorLogin}">업체 로그인</a>
+            <th:block th:replace="~{fragments/layout :: langSwitcher}"></th:block>
         </nav>
     </div>
 
     <section class="hero">
-        <h1>한강에서 오늘, 무엇을 해볼까요?</h1>
-        <p>날짜와 인원을 입력하고 참여 가능한 활동을 찾아보세요.</p>
+        <h1 th:text="#{home.hero.title}">한강에서 오늘, 무엇을 해볼까요?</h1>
+        <p th:text="#{home.hero.subtitle}">날짜와 인원을 입력하고 참여 가능한 활동을 찾아보세요.</p>
 
         <form class="search" th:action="@{/activities}" method="get">
             <div class="field">
-                <label for="date">참여 날짜</label>
+                <label for="date" th:text="#{home.search.date}">참여 날짜</label>
                 <input type="date" id="date" name="date">
             </div>
             <div class="field">
-                <label for="headcount">인원수</label>
+                <label for="headcount" th:text="#{home.search.headcount}">인원수</label>
                 <input type="number" id="headcount" name="headcount" min="1" value="1">
             </div>
             <div class="field">
-                <label for="keyword">활동명</label>
-                <input type="text" id="keyword" name="keyword" placeholder="예: 카약">
+                <label for="keyword" th:text="#{home.search.keyword}">활동명</label>
+                <input type="text" id="keyword" name="keyword" th:placeholder="#{home.search.keyword.placeholder}">
             </div>
-            <button type="submit">조회</button>
+            <button type="submit" th:text="#{home.search.submit}">조회</button>
         </form>
-        <p class="search-hint">조회 시 활동 목록 화면으로 이동합니다.</p>
+        <p class="search-hint" th:text="#{home.search.hint}">조회 시 활동 목록 화면으로 이동합니다.</p>
     </section>
 
     <section class="section">
@@ -211,15 +217,15 @@
 
             <div>
                 <div class="section-head">
-                    <h2>공지사항</h2>
+                    <h2 th:text="#{home.notices.heading}">공지사항</h2>
                 </div>
                 <div class="board">
-                    <p th:if="${#lists.isEmpty(notices)}" class="empty">등록된 공지사항이 없습니다.</p>
+                    <p th:if="${#lists.isEmpty(notices)}" class="empty" th:text="#{home.notices.empty}">등록된 공지사항이 없습니다.</p>
                     <ul th:unless="${#lists.isEmpty(notices)}">
                         <li th:each="notice : ${notices}">
                             <button type="button" class="board-link" data-bs-toggle="modal"
                                     th:data-bs-target="'#noticeModal' + ${notice.noticeId}">
-                                <span class="tag" th:text="${notice.pinned} ? '고정' : '공지'"></span>
+                                <span class="tag" th:text="${notice.pinned} ? #{home.notices.pinnedTag} : #{home.notices.tag}"></span>
                                 <span class="title" th:text="${notice.title}"></span>
                                 <span class="date" th:text="${#temporals.format(notice.publishDate, 'MM.dd')}"></span>
                             </button>
@@ -230,10 +236,10 @@
 
             <div>
                 <div class="section-head">
-                    <h2>이벤트</h2>
+                    <h2 th:text="#{home.events.heading}">이벤트</h2>
                 </div>
                 <div class="board">
-                    <p th:if="${#lists.isEmpty(events)}" class="empty">등록된 이벤트가 없습니다.</p>
+                    <p th:if="${#lists.isEmpty(events)}" class="empty" th:text="#{home.events.empty}">등록된 이벤트가 없습니다.</p>
                     <div class="event-cards" th:unless="${#lists.isEmpty(events)}">
                         <button type="button" class="event-card" th:each="event : ${events}" data-bs-toggle="modal"
                                 th:data-bs-target="'#eventModal' + ${event.eventId}">
@@ -253,7 +259,7 @@
         </div>
     </section>
 
-    <footer>한강활동</footer>
+    <footer th:text="#{common.footer.brand}">한강활동</footer>
 
 </div>
 
@@ -262,7 +268,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="detail-head">
-                <span class="tag" th:text="${notice.pinned} ? '고정' : '공지'"></span>
+                <span class="tag" th:text="${notice.pinned} ? #{home.notices.pinnedTag} : #{home.notices.tag}"></span>
                 <button type="button" class="detail-close" data-bs-dismiss="modal" aria-label="닫기">&times;</button>
             </div>
             <div class="detail-body">
@@ -271,7 +277,7 @@
                 <p class="modal-body-text" th:text="${notice.content}"></p>
             </div>
             <div class="detail-foot">
-                <button type="button" data-bs-dismiss="modal">확인</button>
+                <button type="button" data-bs-dismiss="modal" th:text="#{home.modal.ok}">확인</button>
             </div>
         </div>
     </div>
@@ -282,7 +288,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="detail-head">
-                <span class="tag event-tag">이벤트</span>
+                <span class="tag event-tag" th:text="#{home.events.tag}">이벤트</span>
                 <button type="button" class="detail-close" data-bs-dismiss="modal" aria-label="닫기">&times;</button>
             </div>
             <div class="detail-body">
@@ -294,7 +300,7 @@
                 <p class="modal-body-text" th:text="${event.description}"></p>
             </div>
             <div class="detail-foot">
-                <button type="button" data-bs-dismiss="modal">확인</button>
+                <button type="button" data-bs-dismiss="modal" th:text="#{home.modal.ok}">확인</button>
             </div>
         </div>
     </div>
