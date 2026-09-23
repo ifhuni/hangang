@@ -9,7 +9,6 @@ public class Activity {
     private Long vendorId;
     private String vendorBusinessName;
     private String title;
-    private String description;
     private String location;
     private String imagePath;
     private Integer price;
@@ -52,14 +51,6 @@ public class Activity {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getLocation() {

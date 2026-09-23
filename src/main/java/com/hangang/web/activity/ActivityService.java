@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 public class ActivityService {
 
     private final ActivityMapper activityMapper;
+    private final ActivityContentBlockMapper contentBlockMapper;
     private final ActivityImageStorage imageStorage;
 
-    public ActivityService(ActivityMapper activityMapper, ActivityImageStorage imageStorage) {
+    public ActivityService(ActivityMapper activityMapper, ActivityContentBlockMapper contentBlockMapper,
+                            ActivityImageStorage imageStorage) {
         this.activityMapper = activityMapper;
+        this.contentBlockMapper = contentBlockMapper;
         this.imageStorage = imageStorage;
     }
 
@@ -40,6 +43,10 @@ public class ActivityService {
         return activity;
     }
 
+    public List<ActivityContentBlock> getContentBlocks(Long activityId) {
+        return contentBlockMapper.findByActivityId(activityId);
+    }
+
     public void registerActivity(Long vendorId, ActivityForm form) {
         validateDates(form);
 
@@ -51,6 +58,7 @@ public class ActivityService {
         }
 
         activityMapper.insertActivity(activity);
+        saveContentBlocks(activity.getActivityId(), form.getContentBlocks());
     }
 
     public void updateActivity(Long vendorId, Long activityId, ActivityForm form) {
@@ -70,11 +78,55 @@ public class ActivityService {
         }
 
         activityMapper.updateActivity(activity);
+
+        contentBlockMapper.deleteByActivityId(activityId);
+        saveContentBlocks(activityId, form.getContentBlocks());
+    }
+
+    private void saveContentBlocks(Long activityId, List<ContentBlockForm> blockForms) {
+        if (blockForms == null) {
+            return;
+        }
+
+        int position = 0;
+        for (ContentBlockForm blockForm : blockForms) {
+            if (blockForm.getType() == null) {
+                continue;
+            }
+
+            ActivityContentBlock block = new ActivityContentBlock();
+            block.setActivityId(activityId);
+            block.setBlockType(blockForm.getType());
+
+            if ("TEXT".equals(blockForm.getType())) {
+                if (blockForm.isRemoved() || blockForm.getText() == null || blockForm.getText().isBlank()) {
+                    continue;
+                }
+                block.setTextContent(blockForm.getText());
+            } else if ("IMAGE".equals(blockForm.getType())) {
+                if (blockForm.isRemoved()) {
+                    imageStorage.delete(blockForm.getExistingImagePath());
+                    continue;
+                }
+                if (blockForm.getImage() != null && !blockForm.getImage().isEmpty()) {
+                    block.setImagePath(imageStorage.save(blockForm.getImage()));
+                    imageStorage.delete(blockForm.getExistingImagePath());
+                } else if (blockForm.getExistingImagePath() != null && !blockForm.getExistingImagePath().isBlank()) {
+                    block.setImagePath(blockForm.getExistingImagePath());
+                } else {
+                    continue;
+                }
+            } else {
+                continue;
+            }
+
+            block.setPosition(position++);
+            contentBlockMapper.insertBlock(block);
+        }
     }
 
     private void applyForm(Activity activity, ActivityForm form) {
         activity.setTitle(form.getTitle());
-        activity.setDescription(form.getDescription());
         activity.setLocation(form.getLocation());
         activity.setPrice(form.getPrice());
         activity.setRegistrationStartDate(form.getRegistrationStartDate());

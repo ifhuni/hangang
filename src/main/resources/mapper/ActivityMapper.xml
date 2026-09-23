@@ -7,7 +7,6 @@
         <result property="vendorId" column="vendor_id"/>
         <result property="vendorBusinessName" column="vendor_business_name"/>
         <result property="title" column="title"/>
-        <result property="description" column="description"/>
         <result property="location" column="location"/>
         <result property="imagePath" column="image_path"/>
         <result property="price" column="price"/>
@@ -22,7 +21,7 @@
     </resultMap>
 
     <sql id="selectActivityWithVendor">
-        SELECT a.activity_id, a.vendor_id, v.business_name AS vendor_business_name, a.title, a.description, a.location, a.image_path, a.price,
+        SELECT a.activity_id, a.vendor_id, v.business_name AS vendor_business_name, a.title, a.location, a.image_path, a.price,
                a.registration_start_date, a.registration_end_date, a.activity_start_date, a.activity_end_date,
                a.daily_capacity, a.status, a.created_at, a.updated_at
         FROM activity a
@@ -62,16 +61,15 @@
 
     <insert id="insertActivity" parameterType="com.hangang.web.activity.Activity"
             useGeneratedKeys="true" keyProperty="activityId">
-        INSERT INTO activity (vendor_id, title, description, location, image_path, price, registration_start_date, registration_end_date,
+        INSERT INTO activity (vendor_id, title, location, image_path, price, registration_start_date, registration_end_date,
                                activity_start_date, activity_end_date, daily_capacity, status)
-        VALUES (#{vendorId}, #{title}, #{description}, #{location}, #{imagePath}, #{price}, #{registrationStartDate}, #{registrationEndDate},
+        VALUES (#{vendorId}, #{title}, #{location}, #{imagePath}, #{price}, #{registrationStartDate}, #{registrationEndDate},
                 #{activityStartDate}, #{activityEndDate}, #{dailyCapacity}, 'ACTIVE')
     </insert>
 
     <update id="updateActivity" parameterType="com.hangang.web.activity.Activity">
         UPDATE activity
         SET title = #{title},
-            description = #{description},
             location = #{location},
             image_path = #{imagePath},
             price = #{price},

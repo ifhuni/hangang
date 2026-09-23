@@ -1,5 +1,8 @@
 package com.hangang.web.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.validation.Valid;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -63,7 +66,6 @@ public class VendorActivityController {
 
         ActivityForm form = new ActivityForm();
         form.setTitle(activity.getTitle());
-        form.setDescription(activity.getDescription());
         form.setLocation(activity.getLocation());
         form.setPrice(activity.getPrice());
         form.setRegistrationStartDate(activity.getRegistrationStartDate());
@@ -71,6 +73,16 @@ public class VendorActivityController {
         form.setActivityStartDate(activity.getActivityStartDate());
         form.setActivityEndDate(activity.getActivityEndDate());
         form.setDailyCapacity(activity.getDailyCapacity());
+
+        List<ContentBlockForm> blockForms = new ArrayList<>();
+        for (ActivityContentBlock block : activityService.getContentBlocks(activityId)) {
+            ContentBlockForm blockForm = new ContentBlockForm();
+            blockForm.setType(block.getBlockType());
+            blockForm.setText(block.getTextContent());
+            blockForm.setExistingImagePath(block.getImagePath());
+            blockForms.add(blockForm);
+        }
+        form.setContentBlocks(blockForms);
 
         model.addAttribute("activityForm", form);
         model.addAttribute("activityId", activityId);

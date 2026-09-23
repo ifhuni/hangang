@@ -63,6 +63,21 @@
         .image-preview { display: block; max-width: 220px; max-height: 160px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; object-fit: cover; }
         .field input[type="file"] { border: 1px dashed var(--border); background: var(--surface); padding: 10px 12px; cursor: pointer; }
 
+        .content-block-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
+        .content-block { border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: var(--ground); }
+        .content-block:has(.remove-checkbox:checked) { opacity: .45; }
+        .content-block .block-body textarea { min-height: 70px; margin-bottom: 0; }
+        .block-type-tag { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em; margin-bottom: 8px; }
+        .block-thumb { max-width: 200px; max-height: 140px; border-radius: 8px; object-fit: cover; display: block; margin-bottom: 8px; }
+        .block-controls { display: flex; justify-content: flex-end; margin-top: 8px; }
+        .remove-toggle { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--error); cursor: pointer; }
+        .block-actions { display: flex; gap: 10px; }
+        .block-actions button {
+            flex: 1; border: 1px dashed var(--accent); background: var(--accent-soft); color: var(--accent);
+            border-radius: 8px; padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+        }
+        .block-actions button:hover { filter: brightness(1.05); }
+
         .row { display: flex; gap: 14px; }
         .row .field { flex: 1; }
         @media (max-width: 480px) { .row { flex-direction: column; gap: 0; } }
@@ -113,8 +128,40 @@
                     <div class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
                 </div>
                 <div class="field">
-                    <label for="description">설명</label>
-                    <textarea id="description" th:field="*{description}" placeholder="활동에 대한 소개를 적어주세요."></textarea>
+                    <label>활동 소개</label>
+                    <div class="field-hint" style="margin-top:0; margin-bottom:10px;">텍스트와 사진을 원하는 순서로 추가해 활동을 소개하세요.</div>
+
+                    <div id="content-block-list" class="content-block-list">
+                        <div class="content-block" th:each="block, iterStat : *{contentBlocks}">
+                            <div class="block-type-tag" th:text="${block.type == 'TEXT'} ? '텍스트' : '이미지'"></div>
+                            <input type="hidden" th:field="*{contentBlocks[__${iterStat.index}__].type}">
+                            <input type="hidden" th:if="${block.existingImagePath != null}"
+                                   th:field="*{contentBlocks[__${iterStat.index}__].existingImagePath}">
+                            <div class="block-body">
+                                <textarea th:if="${block.type == 'TEXT'}"
+                                          th:field="*{contentBlocks[__${iterStat.index}__].text}"
+                                          placeholder="텍스트를 입력하세요"></textarea>
+                                <th:block th:if="${block.type == 'IMAGE'}">
+                                    <img th:if="${block.existingImagePath != null}" th:src="@{${block.existingImagePath}}"
+                                         class="block-thumb" alt="">
+                                    <input type="file" th:field="*{contentBlocks[__${iterStat.index}__].image}" accept="image/*">
+                                    <div class="field-hint" th:if="${block.existingImagePath != null}">새 파일을 선택하면 이 사진이 교체됩니다.</div>
+                                </th:block>
+                            </div>
+                            <div class="block-controls">
+                                <label class="remove-toggle">
+                                    <input type="checkbox" class="remove-checkbox"
+                                           th:field="*{contentBlocks[__${iterStat.index}__].removed}">
+                                    <span>이 블록 삭제</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="block-actions">
+                        <button type="button" id="add-text-block">+ 텍스트 추가</button>
+                        <button type="button" id="add-image-block">+ 사진 추가</button>
+                    </div>
                 </div>
                 <div class="field">
                     <label for="location">장소</label>
@@ -122,10 +169,10 @@
                     <div class="field-error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
                 </div>
                 <div class="field">
-                    <label for="image">사진</label>
+                    <label for="image">대표 사진 (목록/상세 상단에 표시)</label>
                     <img th:if="${currentImagePath != null}" th:src="@{${currentImagePath}}" class="image-preview" alt="현재 등록된 사진">
                     <input type="file" id="image" th:field="*{image}" accept="image/*">
-                    <div class="field-hint" th:text="${currentImagePath != null} ? '새 파일을 선택하면 기존 사진이 교체됩니다.' : '활동을 소개하는 사진을 첨부할 수 있습니다. (선택, 5MB 이하)'"></div>
+                    <div class="field-hint" th:text="${currentImagePath != null} ? '새 파일을 선택하면 기존 사진이 교체됩니다.' : '활동 목록 카드와 상세 페이지 상단에 노출될 사진입니다. (선택, 5MB 이하)'"></div>
                 </div>
                 <div class="field">
                     <label for="price">금액(원)</label>
@@ -180,5 +227,37 @@
 
 </div>
 <th:block th:replace="~{fragments/layout :: js}"></th:block>
+<script>
+(function () {
+    var list = document.getElementById('content-block-list');
+    var nextIndex = list.children.length;
+
+    function addBlock(type) {
+        var idx = nextIndex++;
+        var div = document.createElement('div');
+        div.className = 'content-block';
+
+        var bodyHtml = type === 'TEXT'
+            ? '<textarea name="contentBlocks[' + idx + '].text" placeholder="텍스트를 입력하세요"></textarea>'
+            : '<input type="file" name="contentBlocks[' + idx + '].image" accept="image/*">';
+
+        div.innerHTML =
+            '<div class="block-type-tag">' + (type === 'TEXT' ? '텍스트' : '이미지') + '</div>' +
+            '<input type="hidden" name="contentBlocks[' + idx + '].type" value="' + type + '">' +
+            '<div class="block-body">' + bodyHtml + '</div>' +
+            '<div class="block-controls">' +
+                '<label class="remove-toggle">' +
+                    '<input type="checkbox" class="remove-checkbox" name="contentBlocks[' + idx + '].removed">' +
+                    '<span>이 블록 삭제</span>' +
+                '</label>' +
+            '</div>';
+
+        list.appendChild(div);
+    }
+
+    document.getElementById('add-text-block').addEventListener('click', function () { addBlock('TEXT'); });
+    document.getElementById('add-image-block').addEventListener('click', function () { addBlock('IMAGE'); });
+})();
+</script>
 </body>
 </html>

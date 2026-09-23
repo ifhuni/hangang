@@ -64,6 +64,7 @@ public class ActivityController {
         }
 
         model.addAttribute("activity", activity);
+        model.addAttribute("contentBlocks", activityService.getContentBlocks(activityId));
         model.addAttribute("calendarMonths", buildCalendarMonths(activity.getActivityStartDate(), activity.getActivityEndDate(), rowsByDate));
         return "activity/detail";
     }

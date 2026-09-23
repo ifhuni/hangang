@@ -1,6 +1,8 @@
 package com.hangang.web.activity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,9 +16,9 @@ public class ActivityForm {
     @NotBlank(message = "제목을 입력해주세요.")
     private String title;
 
-    private String description;
-
     private MultipartFile image;
+
+    private List<ContentBlockForm> contentBlocks = new ArrayList<>();
 
     @NotBlank(message = "장소를 입력해주세요.")
     private String location;
@@ -53,20 +55,20 @@ public class ActivityForm {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public MultipartFile getImage() {
         return image;
     }
 
     public void setImage(MultipartFile image) {
         this.image = image;
+    }
+
+    public List<ContentBlockForm> getContentBlocks() {
+        return contentBlocks;
+    }
+
+    public void setContentBlocks(List<ContentBlockForm> contentBlocks) {
+        this.contentBlocks = contentBlocks;
     }
 
     public String getLocation() {
